@@ -18,7 +18,8 @@ class InvitationHelper {
             }
             return invitationHelper!!
         }
-        fun cleanInstance(){
+
+        fun cleanInstance() {
             invitationHelper = null
         }
     }
@@ -27,11 +28,11 @@ class InvitationHelper {
     /**
      * Parse invitation url to valuable invitation JSON message
      */
-    fun parseInvitationLink(rawValue: String?): String? {
+    fun parseInvitationLink(rawValue: String?): Invitation? {
         var parsedString = ""
         if (rawValue != null) {
             var ciParam: String? = null
-           println("mylog500 rawValue=$rawValue")
+            println("mylog500 rawValue=$rawValue")
             if (rawValue.contains("?c_i=")) {
                 val ciParamStart = rawValue.indexOf("?c_i=")
                 ciParam = rawValue.substring(ciParamStart + 5)
@@ -39,7 +40,8 @@ class InvitationHelper {
             if (ciParam != null) {
                 try {
                     println("mylog500 ciParam=$ciParam")
-                    val bytes =  Base64.getUrlDecoder().decode(StringUtils.stringToBytes(ciParam, StringUtils.CODEC.UTF_8))
+                    val bytes = Base64.getUrlDecoder()
+                        .decode(StringUtils.stringToBytes(ciParam, StringUtils.CODEC.UTF_8))
                     parsedString = StringUtils.bytesToString(bytes, StringUtils.CODEC.UTF_8)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -47,29 +49,35 @@ class InvitationHelper {
                 println("mylog500 decoded=$parsedString")
             }
         }
-        if (validateInvitationUrl(parsedString)) {
-            return parsedString
-        }
-        return null
-
+        return validateInvitationMessage(parsedString)
     }
 
 
     /**
      * Validate that message is instance of Invitation
      */
-    fun validateInvitationUrl(url: String): Boolean {
-        try{
+    fun validateInvitationMessage(url: String): Invitation? {
+        try {
             val message = Message.restoreMessageInstance(url)
             if (message.first) {
                 if (message.second is Invitation) {
-                    return true
+                    return message.second as Invitation
                 }
             }
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-        return false
+        return null
+    }
+
+
+    /**
+     * Validate that message is instance of Invitation
+     */
+    fun isInvitationMessageValid(url: String): Boolean {
+        val invitation = validateInvitationMessage(url)
+        return invitation != null
+
     }
 
 
