@@ -155,6 +155,16 @@ actual  class MobileAgent actual constructor(walletConfig: JSONObject?, walletCr
         }
     }
 
+    actual fun sendMessage(
+        message: Message?,
+        endpoint: String?
+    ){
+       // val cryptoMsg = packMessage(message ?: Message(), my_vk, their_vk.orEmpty())
+        if (sender != null && endpoint!=null) {
+            val isSend = sender!!.sendTo(endpoint, StringUtils.stringToBytes(message?.getMessageObjec().toString(), StringUtils.CODEC.UTF_8))
+            //return new Pair<>(isSend, null);
+        }
+    }
     /*  fun getWebSocket(endpoint: String?): WebSocketConnector? {
           return if (webSockets.containsKey(endpoint)) {
               webSockets[endpoint]
