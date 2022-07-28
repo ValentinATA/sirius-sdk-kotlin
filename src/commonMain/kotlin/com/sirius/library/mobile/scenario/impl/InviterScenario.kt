@@ -10,9 +10,11 @@ import com.sirius.library.agent.pairwise.Pairwise
 import com.sirius.library.messaging.Message
 import com.sirius.library.mobile.SiriusSDK
 import com.sirius.library.mobile.scenario.BaseScenario
+import com.sirius.library.mobile.scenario.EventStorageAbstract
+import com.sirius.library.mobile.scenario.EventTransform
 import kotlin.reflect.KClass
 
-abstract class InviterScenario() : BaseScenario() {
+abstract class InviterScenario(val eventStorage: EventStorageAbstract) : BaseScenario() {
 
     var connectionKey : String? =null
 
@@ -45,6 +47,9 @@ abstract class InviterScenario() : BaseScenario() {
         val pairwise : Pairwise? = machine.createConnection(request)
         pairwise?.let {
             SiriusSDK.getInstance().context.pairwiseList.ensureExists(it)
+            val theirDid = it.their.did
+            val pair =  Pair(theirDid, event.message())
+            eventStorage.eventStore(request.getId() ?:"", pair, false)
         }
         return Pair(pairwise!=null,null)
     }
