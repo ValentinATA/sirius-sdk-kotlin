@@ -140,6 +140,17 @@ actual class MobileAgent actual constructor(
         }
     }
 
+    actual fun sendMessage(
+        message: Message?,
+        endpoint: String?
+    ) {
+
+        if (sender != null) {
+            val isSend = sender!!.sendTo(endpoint,  StringUtils.stringToBytes(message?.getMessageObjec().toString(), StringUtils.CODEC.UTF_8))
+            //return new Pair<>(isSend, null);
+        }
+    }
+
     actual fun connect(endpoint: String?) {
         sender?.open(endpoint)
     }
@@ -322,6 +333,8 @@ actual class MobileAgent actual constructor(
     ): AbstractCoProtocolTransport? {
         return null
     }
+
+
 
 
 }

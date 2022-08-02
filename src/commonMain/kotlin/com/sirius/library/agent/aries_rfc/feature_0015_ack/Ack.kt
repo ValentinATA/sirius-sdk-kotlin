@@ -14,6 +14,16 @@ open class Ack(message: String) : AriesProtocolMessage(message) {
 
     }
 
+    fun getStatus(): Status? {
+        try {
+            val statusName = messageObj.getString("status") ?: ""
+            return Status.valueOf(statusName)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
     enum class Status {
         OK, PENDING, FAIL
     }
@@ -25,7 +35,7 @@ open class Ack(message: String) : AriesProtocolMessage(message) {
             return self()
         }
 
-         override fun generateJSON(): JSONObject {
+        override fun generateJSON(): JSONObject {
             val jsonObject: JSONObject = super.generateJSON()
             val id: String? = jsonObject.optString("id")
             if (status != null) {

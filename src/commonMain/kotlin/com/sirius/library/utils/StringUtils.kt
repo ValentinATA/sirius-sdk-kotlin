@@ -39,21 +39,10 @@ object StringUtils {
         return Base58.encode(bytes!!)
     }
 
-    fun escapeStringLikePython(string: String): String {
-        val chars = string.toCharArray()
-        val escapedString: StringBuilder = StringBuilder()
-        //TODO CharUtils.isAscii(charOne)
-        /*for (charOne in chars) {
-            if (CharUtils.isAscii(charOne)) {
-                escapedString.append(charOne)
-            } else {
-                val escapedStr: String = CharUtils.unicodeEscaped(charOne)
-                escapedString.append(escapedStr)
-            }
-        }
-           return escapedString.toString()
-           */
 
-        return string
-    }
+
+
+    public fun String.toCharArray(): CharArray = CharArray(length) { get(it) }
+
+
 }

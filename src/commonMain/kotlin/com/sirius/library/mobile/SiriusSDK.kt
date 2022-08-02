@@ -108,7 +108,7 @@ class SiriusSDK {
         mainDirPath: String,
         mediatorAddress: String,
         recipientKeys: List<String>,
-        label: String, baseSender: BaseSender
+        label: String, serverUri: String,baseSender: BaseSender
     ) {
 
         this.label = label
@@ -119,7 +119,7 @@ class SiriusSDK {
         //  Os.setenv("TMPDIR",mainDirPath,true)
 //        PoolUtils.createPoolLedgerConfig(networkName, genesisPath)
         //   MobileContext.addPool(networkName, genesisPath)
-        createContextWitMediator(config, credential, mediatorAddress, recipientKeys, baseSender)
+        createContextWitMediator(config, credential, mediatorAddress, recipientKeys,serverUri, baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
     }
@@ -130,7 +130,7 @@ class SiriusSDK {
         mainDirPath: String,
         mediatorAddress: String,
         recipientKeys: List<String>,
-        label: String, poolName : String?, baseSender: BaseSender
+        label: String, poolName : String?, serverUri: String,baseSender: BaseSender
     ) {
         LibsodiumInitializer.initialize()
         this.label = label
@@ -141,7 +141,7 @@ class SiriusSDK {
         //  Os.setenv("TMPDIR",mainDirPath,true)
 //        PoolUtils.createPoolLedgerConfig(networkName, genesisPath)
         MobileContext.addPool(poolName, mainDirPath + "/"  +"pool_config.txn" )
-        createContextWitMediator(config, credential, mediatorAddress, recipientKeys, baseSender)
+        createContextWitMediator(config, credential, mediatorAddress, recipientKeys, serverUri, baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
     }
@@ -152,6 +152,7 @@ class SiriusSDK {
         credential: String,
         mediatorAddress: String,
         recipientKeys: List<String>,
+        serverUri: String,
         baseSender: BaseSender
     ) {
 
@@ -163,6 +164,7 @@ class SiriusSDK {
                     .setEndpoint(mediatorAddress)
                     .setRecipientKeys(recipientKeys).build()
             )
+            .setServerUri(serverUri)
             .setSender(baseSender)
             .build() as MobileContext
 

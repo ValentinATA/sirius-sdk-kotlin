@@ -23,11 +23,11 @@ class TestEncryption {
     var seed2 = "000000000000000000000000000SEED2"
     val testMessage: String
         get() {
-            val string = "Test encryption message"
+            val string = "Test encryption строка"
             val enc_message: JSONObject = JSONObject()
             enc_message.put("content", string)
             val message: String = enc_message.toString()
-            return StringUtils.escapeStringLikePython(message)
+            return StringCodec().escapeStringLikePython(message)
         }
 
     val testMessage2 : String

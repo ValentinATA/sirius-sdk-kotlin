@@ -54,6 +54,10 @@ expect class MobileAgent(walletConfig: JSONObject?, walletCredentials: JSONObjec
         routing_keys: List<String?>?
     )
 
+     fun sendMessage(
+        message: Message?,
+        endpoint: String?
+    )
 
     fun connect(endpoint: String?)
 
