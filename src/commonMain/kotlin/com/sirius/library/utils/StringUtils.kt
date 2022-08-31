@@ -11,21 +11,21 @@ object StringUtils {
 
 
     fun stringToBytes(string: String,encodeCharset: CODEC): ByteArray {
+        val codec = StringCodec()
         if (encodeCharset == CODEC.US_ASCII) {
-            val codec = StringCodec()
             return codec.fromASCIIStringToByteArray(string)
         } else if (encodeCharset == CODEC.UTF_8) {
-            return string.encodeToByteArray()
+            return codec.fromUTF8StringToByteArray(string)
         }
         return ByteArray(0)
     }
 
     fun bytesToString(bytes: ByteArray,encodeCharset: CODEC ): String {
+        val codec = StringCodec()
         if (encodeCharset == CODEC.US_ASCII) {
-            val codec = StringCodec()
             return codec.fromByteArrayToASCIIString(bytes)
         } else if (encodeCharset == CODEC.UTF_8) {
-            return bytes.decodeToString()
+            return codec.fromByteArrayToUTF8String(bytes)
         }
         return ""
     }

@@ -41,10 +41,7 @@ class MobileContext(config: MobileHub.Config) : Context<MobileHub>(MobileHub(con
             return this
         }
 
-        fun setServerUri(serverUri: String): MobileContextBuilder {
-            config.serverUri = serverUri
-            return this
-        }
+
 
         fun setWalletCredentials(walletCredentials: JSONObject): MobileContextBuilder {
             config.walletCredentials = walletCredentials

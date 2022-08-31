@@ -19,7 +19,7 @@ abstract class InviterScenario(val eventStorage: EventStorageAbstract) : BaseSce
     var connectionKey : String? =null
 
 
-    open fun generateInvitation()  : String{
+    open fun generateInvitation(serverUri : String)  : String{
         val verkey = SiriusSDK.getInstance().context.crypto.createKey()
         connectionKey =  verkey
         val myEndpoint : Endpoint = SiriusSDK.getInstance().context.endpointWithEmptyRoutingKeys
@@ -27,7 +27,7 @@ abstract class InviterScenario(val eventStorage: EventStorageAbstract) : BaseSce
         val invitation = Invitation.builder()
             .setLabel(SiriusSDK.getInstance().label)
             .setRecipientKeys(listOfNotNull(verkey)).setEndpoint(myEndpoint.address).build()
-        val qrContent = SiriusSDK.getInstance().context.currentHub.serverUri + invitation.invitationUrl()
+        val qrContent = serverUri + invitation.invitationUrl()
         return qrContent
     }
 

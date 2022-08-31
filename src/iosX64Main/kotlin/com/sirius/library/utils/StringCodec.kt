@@ -26,4 +26,19 @@ actual class StringCodec actual constructor() {
             }
         }
     }
+
+    actual fun fromUTF8StringToByteArray(string: String?): ByteArray {
+       // if (string==null) {
+            return ByteArray(0)
+      //  }
+      //  return string.toByteArray(StandardCharsets.UTF_8)
+    }
+
+    actual fun fromByteArrayToUTF8String(byteArray: ByteArray): String {
+      return ""
+    }
+
+    actual fun escapeStringLikePython(string: String): String {
+       return ""
+    }
 }

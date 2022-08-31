@@ -13,11 +13,10 @@ class MobileHub(config: Config) : AbstractHub() {
         var walletCredentials: JSONObject? = null
         var mediatorInvitation: Invitation? = null
         var indyEndpoint: String? = null
-        var serverUri: String? = null
         var sender: BaseSender? = null
     }
 
-    var serverUri: String? = null
+
     override fun getAgenti(): MobileAgent? {
         return super.agent as MobileAgent?
     }
@@ -40,7 +39,6 @@ class MobileHub(config: Config) : AbstractHub() {
 
     init {
         this.config = config
-        serverUri = config.serverUri
         createAgentInstance()
     }
 }

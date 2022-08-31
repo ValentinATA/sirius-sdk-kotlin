@@ -45,13 +45,12 @@ class SiriusSDK {
 
     private fun createContext(
         indyEndpoint: String,
-        serverUri: String,
         config: String,
         credential: String,
         baseSender: BaseSender
     ) {
 
-        context = MobileContext.builder().setIndyEndpoint(indyEndpoint).setServerUri(serverUri)
+        context = MobileContext.builder().setIndyEndpoint(indyEndpoint)
             .setWalletConfig(JSONObject(config)).setWalletCredentials(JSONObject(credential))
             .setMediatorInvitation(Invitation.builder().setLabel(label).build())
             .setSender(baseSender)
@@ -85,7 +84,6 @@ class SiriusSDK {
 
     fun initialize(
         indyEndpoint: String,
-        myHost: String,
         alias: String,
         pass: String,
         mainDirPath: String,
@@ -96,7 +94,7 @@ class SiriusSDK {
         initAllMessages()
         val config = WalletHelper.getInstance().createWalletConfig(alias, mainDirPath)
         val credential = WalletHelper.getInstance().createWalletCredential(pass)
-        createContext(indyEndpoint, myHost, config, credential,baseSender)
+        createContext(indyEndpoint, config, credential,baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
     }
@@ -108,7 +106,7 @@ class SiriusSDK {
         mainDirPath: String,
         mediatorAddress: String,
         recipientKeys: List<String>,
-        label: String, serverUri: String,baseSender: BaseSender
+        label: String,baseSender: BaseSender
     ) {
 
         this.label = label
@@ -119,7 +117,7 @@ class SiriusSDK {
         //  Os.setenv("TMPDIR",mainDirPath,true)
 //        PoolUtils.createPoolLedgerConfig(networkName, genesisPath)
         //   MobileContext.addPool(networkName, genesisPath)
-        createContextWitMediator(config, credential, mediatorAddress, recipientKeys,serverUri, baseSender)
+        createContextWitMediator(config, credential, mediatorAddress, recipientKeys, baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
     }
@@ -130,7 +128,7 @@ class SiriusSDK {
         mainDirPath: String,
         mediatorAddress: String,
         recipientKeys: List<String>,
-        label: String, poolName : String?, serverUri: String,baseSender: BaseSender
+        label: String, poolName : String?,baseSender: BaseSender
     ) {
         LibsodiumInitializer.initialize()
         this.label = label
@@ -141,7 +139,7 @@ class SiriusSDK {
         //  Os.setenv("TMPDIR",mainDirPath,true)
 //        PoolUtils.createPoolLedgerConfig(networkName, genesisPath)
         MobileContext.addPool(poolName, mainDirPath + "/"  +"pool_config.txn" )
-        createContextWitMediator(config, credential, mediatorAddress, recipientKeys, serverUri, baseSender)
+        createContextWitMediator(config, credential, mediatorAddress, recipientKeys, baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
     }
@@ -152,7 +150,6 @@ class SiriusSDK {
         credential: String,
         mediatorAddress: String,
         recipientKeys: List<String>,
-        serverUri: String,
         baseSender: BaseSender
     ) {
 
@@ -164,7 +161,6 @@ class SiriusSDK {
                     .setEndpoint(mediatorAddress)
                     .setRecipientKeys(recipientKeys).build()
             )
-            .setServerUri(serverUri)
             .setSender(baseSender)
             .build() as MobileContext
 
