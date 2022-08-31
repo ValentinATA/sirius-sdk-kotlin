@@ -4,20 +4,19 @@ import com.sirius.library.agent.CloudAgent
 import com.sirius.library.agent.model.Entity
 import com.sirius.library.base.JsonMessage
 import com.sirius.library.encryption.P2PConnection
+import com.sirius.library.hub.CloudContext
+import com.sirius.library.hub.Context
 import com.sirius.library.models.AgentParams
 import com.sirius.library.utils.JSONObject
+import com.sirius.library.utils.StringUtils
 import com.sirius.library.utils.System
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlin.coroutines.suspendCoroutine
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
+
 
 class ServerTestSuite {
     var SETUP_TIMEOUT = 60
@@ -124,6 +123,15 @@ class ServerTestSuite {
 
       //  return Pair(false, "e.message")
     }
+
+    fun getContext(agentName: String): Context<*> {
+        val agent = getAgentParams(agentName)
+        return CloudContext.builder().setServerUri(agent.serverAddress)
+            .setCredentials(StringUtils.stringToBytes(agent.credentials, StringUtils.CODEC.UTF_8))
+            .setP2p(agent.connection).build()
+    }
+
+
 
     companion object {
         fun newInstance(): ServerTestSuite {

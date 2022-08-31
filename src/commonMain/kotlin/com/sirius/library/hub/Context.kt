@@ -576,6 +576,15 @@ abstract class Context<T: AbstractHub> internal constructor(hub: T) : Closeable 
         currentHub.agentConnectionLazy?.sendTo(message, to)
     }
 
+    open fun sendMessage(
+        message: Message?, theirVk: List<String?>?,
+        endpoint: String?, myVk: String?, routingKeys: List<String?>?
+    ) {
+        endpoint?.let {
+            currentHub.agentConnectionLazy?.sendMessage(message, theirVk, endpoint, myVk, routingKeys)
+        }
+    }
+
     fun acquire(
         resources: List<String?>?,
         lockTimeoutSec: Int?,

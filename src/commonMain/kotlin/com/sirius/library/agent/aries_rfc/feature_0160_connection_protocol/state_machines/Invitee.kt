@@ -110,7 +110,7 @@ class Invitee(context: Context<*>, me: Pairwise.Me, myEndpoint: Endpoint) : Base
                                             "their",
                                             JSONObject().put("did", theirInfo.did)
                                                 .put("verkey", theirInfo.verkey)
-                                                .put("label", their.label).put(
+                                                .put("label", invitation.label()).put(
                                                     "endpoint",
                                                     JSONObject().put("address", theirInfo.endpoint)
                                                         .put("routing_keys", theirInfo.routingKeys)

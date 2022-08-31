@@ -9,6 +9,7 @@ import com.sirius.library.agent.connections.Endpoint
 import com.sirius.library.agent.listener.Event
 import com.sirius.library.agent.listener.Listener
 import com.sirius.library.agent.pairwise.Pairwise
+import com.sirius.library.helpers.Agent0160
 import com.sirius.library.helpers.ConfTest
 import com.sirius.library.helpers.ServerTestSuite
 import com.sirius.library.hub.CloudContext
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.test.*
+
 
 class TestAriesFeature0160 {
     lateinit var confTest: ConfTest
@@ -100,6 +102,35 @@ class TestAriesFeature0160 {
         }
 
     }
+
+    /*@Test
+    fun testPersistent0160() {
+        val testSuite = confTest.suiteSingleton
+        val inviterContext: Context<*> = testSuite.getContext("agent1")
+        val inviteeContext: Context<*> = testSuite.getContext("agent2")
+        val inviter = Agent0160(inviterContext, "Inviter")
+        val invitee = Agent0160(inviteeContext, "Invitee")
+        inviter.start()
+        invitee.start()
+        val invitation = inviter.createInvitation()
+        invitee.acceptInvitation(invitation)
+        val inviteePw: Pairwise =
+            invitee.getPairwises().timeout(30, TimeUnit.SECONDS).blockingFirst()
+        val inviterPw: Pairwise =
+            inviter.getPairwises().timeout(30, TimeUnit.SECONDS).blockingFirst()
+        assertEquals(inviteePw.their.did, inviterPw.me.did)
+        assertEquals(inviterPw.their.did, inviteePw.me.did)
+        assertEquals(inviteePw.their.verkey, inviterPw.me.verkey)
+        assertEquals(inviterPw.their.verkey, inviteePw.me.verkey)
+        assertEquals(
+            inviteePw.their.endpointAddress,
+            inviterContext.endpointAddressWithEmptyRoutingKeys
+        )
+        assertEquals(
+            inviterPw.their.endpointAddress,
+            inviteeContext.endpointAddressWithEmptyRoutingKeys
+        )
+    }*/
 
     companion object {
         fun runInviter(
