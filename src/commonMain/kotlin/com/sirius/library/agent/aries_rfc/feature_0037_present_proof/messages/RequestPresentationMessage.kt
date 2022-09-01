@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 
 class RequestPresentationMessage(msg: String) : BasePresentProofMessage(msg) {
     companion object {
-        private const val TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        const val TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         fun builder(): Builder<*> {
             return RequestPresentationMessageBuilder()
         }

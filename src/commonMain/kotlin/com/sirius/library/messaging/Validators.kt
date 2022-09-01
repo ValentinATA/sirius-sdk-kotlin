@@ -5,22 +5,7 @@ import com.sirius.library.utils.JSONObject
 import kotlinx.serialization.json.JsonObject
 
 class Validators {
-    var ID = "@id"
-    var TYPE = "@type"
-    var THREAD_DECORATOR = "~thread"
-    var THREAD_ID = "thid"
-    var PARENT_THREAD_ID = "pthid"
-    var SENDER_ORDER = "sender_order"
-    var RECEIVED_ORDERS = "received_orders"
-    var THREADING_ERROR = "threading_error"
-    var TIMING_ERROR = "timing_error"
-    var TIMING_DECORATOR = "~timing"
-    var IN_TIME = "in_time"
-    var OUT_TIME = "out_time"
-    var STALE_TIME = "stale_time"
-    var EXPIRES_TIME = "expires_time"
-    var DELAY_MILLI = "delay_milli"
-    var WAIT_UNTIL_TIME = "wait_until_time"
+
     @Throws(SiriusValidationError::class)
     fun checkForAttributes(partial: JSONObject?, vararg expectedAttributes: String?) {
         for (attribute in expectedAttributes) {
@@ -73,8 +58,8 @@ class Validators {
     }
 
     fun validateTimingBlock(partial: JSONObject) {
-        if (partial.has(TIMING_DECORATOR)) {
-            val timing: JSONObject? = partial.getJSONObject(TIMING_DECORATOR)
+        if (partial.has(Companion.TIMING_DECORATOR)) {
+            val timing: JSONObject? = partial.getJSONObject(Companion.TIMING_DECORATOR)
 
             /*   non_neg_num = NonNegativeNumberField()
             iso_data = ISODatetimeStringField()
@@ -105,5 +90,24 @@ class Validators {
             if t_stale > t_exp:
             raise SiriusValidationError ('{} cannot be greater than {}'.format(STALE_TIME, EXPIRES_TIME))*/
         }
+    }
+
+    companion object {
+        const val ID = "@id"
+        const val TYPE = "@type"
+        const val THREAD_DECORATOR = "~thread"
+        const val THREAD_ID = "thid"
+        const val PARENT_THREAD_ID = "pthid"
+        const val SENDER_ORDER = "sender_order"
+        const val RECEIVED_ORDERS = "received_orders"
+        const val THREADING_ERROR = "threading_error"
+        const val TIMING_ERROR = "timing_error"
+        const val IN_TIME = "in_time"
+        const val OUT_TIME = "out_time"
+        const val STALE_TIME = "stale_time"
+        const val EXPIRES_TIME = "expires_time"
+        const val DELAY_MILLI = "delay_milli"
+        const val WAIT_UNTIL_TIME = "wait_until_time"
+        const val  TIMING_DECORATOR = "~timing"
     }
 }
