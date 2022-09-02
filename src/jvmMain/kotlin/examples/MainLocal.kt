@@ -79,7 +79,7 @@ object MainLocal {
 
 
             val config: MobileHub.Config = MobileHub.Config()
-            config.serverUri = "https://demo.socialsirius.com"
+          //  config.serverUri = "https://demo.socialsirius.com"
           /*  config.credentials =
                 "ez8ucxfrTiV1hPX99MHt/JZL1h63sUO9saQCgn2BsaC2EndwDSYpOo6eFpn8xP8ZDoj5B5KN4aaLiyzTqkrbDxrbAe/+2uObPTl6xZdXMBs=".encodeToByteArray()
             config.p2p = P2PConnection(
@@ -91,7 +91,7 @@ object MainLocal {
             context.connectToMediator("Edge Test agent")
             val qrCodeRes = qrCode()
             val connectionKey = qrCodeRes!!.first
-            val qrUrl = qrCodeRes.second
+            val qrUrl = "https://demo.socialsirius.com"+qrCodeRes.second
             println("Открой QR код и просканируй в Sirius App: $qrUrl")
             // Формируем DID - свой идентификатор в контексте relationship и VERKEY - открытый ключ
 
