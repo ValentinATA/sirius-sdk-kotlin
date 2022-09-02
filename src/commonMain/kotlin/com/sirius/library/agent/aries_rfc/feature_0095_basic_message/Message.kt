@@ -5,11 +5,8 @@ import com.sirius.library.agent.aries_rfc.concept_0017_attachments.Attach
 import com.sirius.library.agent.aries_rfc.feature_0037_present_proof.messages.RequestPresentationMessage
 import com.sirius.library.messaging.Validators
 import com.sirius.library.utils.Date
-import com.sirius.library.utils.DateUtils
 import com.sirius.library.utils.JSONArray
 import com.sirius.library.utils.JSONObject
-import kotlinx.datetime.toDatePeriod
-import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KClass
 
 class Message(msg: String) : AriesProtocolMessage(msg) {
