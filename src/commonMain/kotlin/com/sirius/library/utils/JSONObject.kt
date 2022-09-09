@@ -270,7 +270,7 @@ open class JSONObject {
     }
 
     fun similar(cleanedExpect: JSONObject): Boolean {
-       return jsonObject?.equals(cleanedExpect?.jsonObject)
+       return jsonObject == cleanedExpect.jsonObject
     }
 
     fun length(): Int {

@@ -29,10 +29,10 @@ class ThreadBasedCoProtocolTransport(var thid: String, pairwise: Pairwise?, rpc:
         val res: Pair<Boolean, Message?> = super.sendAndWait(message)
         val response: Message? = res.second
         if (res.first) {
-            if (response?.messageObjectHasKey(THREAD_DECORATOR)!!) {
-                if (response?.getMessageObjec().getJSONObject(THREAD_DECORATOR)?.has("sender_order")==true) {
+            if (response?.messageObjectHasKey(THREAD_DECORATOR) == true) {
+                if (response.getMessageObjec().getJSONObject(THREAD_DECORATOR)?.has("sender_order")==true) {
                     val respondSenderOrder: Int? =
-                        response?.getMessageObjec().getJSONObject(THREAD_DECORATOR)?.getInt("sender_order")
+                        response.getMessageObjec().getJSONObject(THREAD_DECORATOR)?.getInt("sender_order")
                     if (their != null) {
                         val recipient: String = their!!.did?:""
                         //err = DIDField().validate(recipient)

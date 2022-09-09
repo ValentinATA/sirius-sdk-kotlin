@@ -166,6 +166,7 @@ actual class MobileAgent actual constructor(
             println(" myVk=" + myVk)
             println("  StringUtils.stringToBytes(msg.messageObj.toString(), UTF_8)=" + msg.messageObj.toString())
             val future = CompletableFutureKotlin<ByteArray?>()
+            //TODO StrinCodec
             val messBytes =   StringUtils.stringToBytes(msg.messageObj.toString(), StringUtils.CODEC.UTF_8)
             val messData = memScoped{
                 NSData.create(bytes = allocArrayOf(messBytes), length = messBytes.size.toULong())
