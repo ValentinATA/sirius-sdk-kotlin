@@ -24,9 +24,9 @@ class EventWalletStorage(val storage: AbstractNonSecrets) {
 
         fun getInstance(): EventWalletStorage {
             if (eventWalletStorage == null) {
-                if (SiriusSDK.getInstance().context != null) {
+                if (SiriusSDK.context != null) {
                     eventWalletStorage =
-                        EventWalletStorage(SiriusSDK.getInstance().context.nonSecrets)
+                        EventWalletStorage(SiriusSDK.context!!.nonSecrets)
                 }
             }
             return eventWalletStorage!!
@@ -89,7 +89,7 @@ class EventWalletStorage(val storage: AbstractNonSecrets) {
         val message = eventObject.optJSONObject("message")
         val pairwiseVerkey = eventObject.optString("pairwiseVerkey")
         val pairwiseDid = eventObject.optString("pairwiseDid")
-        val pairwise = PairwiseHelper.getInstance().getPairwise(theirDid = pairwiseDid)
+        val pairwise = PairwiseHelper.getPairwise(theirDid = pairwiseDid)
         return Event(pairwise, message.toString())
     }
 

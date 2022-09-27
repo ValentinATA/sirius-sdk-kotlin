@@ -10,22 +10,10 @@ import com.sirius.library.mobile.scenario.EventActionListener
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class ScenarioHelper {
+object ScenarioHelper {
 
-
-    companion object {
-        private var scenarioHelper: ScenarioHelper? = null
-
-
-        fun getInstance(): ScenarioHelper {
-            if (scenarioHelper == null) {
-                scenarioHelper = ScenarioHelper()
-            }
-            return scenarioHelper!!
-        }
-        fun cleanInstance(){
-            scenarioHelper = null
-        }
+    fun cleanInstance(){
+       // scenarioHelper = null
     }
 
     val scenarioMap : MutableMap<String, BaseScenario> = HashMap()

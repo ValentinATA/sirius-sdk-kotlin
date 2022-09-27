@@ -66,6 +66,8 @@ abstract class ConnProtocolMessage(msg: String) : AriesProtocolMessage(msg) {
         override fun generateJSON(): JSONObject {
             return super.generateJSON()
         }
+
+
     }
 
     fun theirDid(): String {

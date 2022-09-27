@@ -2,6 +2,7 @@ package com.sirius.library.agent.listener
 
 import com.sirius.library.agent.pairwise.Pairwise
 import com.sirius.library.messaging.Message
+import com.sirius.library.messaging.MessageUtil
 import com.sirius.library.utils.JSONObject
 
 class Event(pairwise: Pairwise?, message: String) : Message(message) {
@@ -9,7 +10,7 @@ class Event(pairwise: Pairwise?, message: String) : Message(message) {
     fun message(): Message? {
         if (getMessageObjec()?.has("message") ==true) {
             val msgJson: JSONObject? = getMessageObjec()?.getJSONObject("message")
-            var restored: Message? =restoreMessageInstance(msgJson.toString())?.second
+            var restored: Message? = MessageUtil.restoreMessageInstance(msgJson.toString())?.second
             return restored
         }
         return null

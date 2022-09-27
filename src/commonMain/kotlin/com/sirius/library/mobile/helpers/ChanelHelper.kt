@@ -14,28 +14,19 @@ import kotlinx.coroutines.*
  * This is the helper class to show how the SDK workflow is done. Parse message from different channels (Websocket, FCM etc..)
  * and loop through scenario
  */
-class ChanelHelper {
+object ChanelHelper {
 
 
-    companion object {
-        private var chanelHelper: ChanelHelper? = null
-
-        fun getInstance(): ChanelHelper {
-            if (chanelHelper == null) {
-                chanelHelper = ChanelHelper()
-            }
-            return chanelHelper!!
-        }
-
-        fun cleanInstance(){
-            chanelHelper = null
-        }
+    fun cleanInstance(){
+      //  chanelHelper = null
     }
+
+
 
     fun initListener() {
         if (listener == null) {
             CoroutineScope(Dispatchers.Default).launch  {
-                listener = SiriusSDK.getInstance().context.subscribe()
+                listener = SiriusSDK.context?.subscribe()
             }
 
         }
@@ -50,10 +41,10 @@ class ChanelHelper {
             try {
                 println("mylog200 listener=" + listener)
                 val cf  = listener!!.one
-                SiriusSDK.getInstance().context.currentHub.getAgenti()?.
+                SiriusSDK.context?.currentHub?.getAgenti()?.
                 receiveMsg(StringUtils.stringToBytes(message, StringUtils.CODEC.UTF_8))
                 val event = cf?.get(60L)
-                val message = event?.message()
+              //  val message = event?.message()
                 //val type = message.type
                 parseMessageByScenario(event)
             } catch (e: Exception) {
@@ -65,7 +56,7 @@ class ChanelHelper {
     }
 
     private fun parseMessageByScenario(event: Event?) {
-        ScenarioHelper.getInstance().scenarioMap.forEach { scenario->
+        ScenarioHelper.scenarioMap.forEach { scenario->
             event?.let {
                 scenario.value.startScenario(event)
             }

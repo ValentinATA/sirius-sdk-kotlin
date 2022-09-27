@@ -9,6 +9,86 @@ import com.sirius.library.utils.UUID
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.reflect.KClass
 
+
+
+
+ object MessageUtil {
+    val MSG_REGISTRY: MutableList<Triple<KClass<out Message>, String, String>> =
+        ArrayList<Triple<KClass<out Message>, String, String>>()
+    val MSG_REGISTRY2: MutableList<Pair<KClass<out Message>, (String) -> Message?>> =
+        ArrayList<Pair<KClass<out Message>, (String) -> Message?>>()
+
+    fun generateId(): String {
+        return UUID.randomUUID.toString()
+    }
+
+    fun registerMessageClass(clas: KClass<out Message>, protocol: String, constructor: (String) -> Message?) {
+        registerMessageClass(clas, protocol, "*",constructor)
+    }
+
+    fun registerMessageClass(
+        clas: KClass<out Message>,
+        protocol: String,
+        name: String?, constructor: (String) -> Message?
+    ) {
+        var name = name
+        if (name == null) name = "*"
+
+        for (i in MSG_REGISTRY.indices) {
+            if (MSG_REGISTRY[i].first.equals(clas)) {
+                MSG_REGISTRY.set(i, Triple(clas, protocol, name))
+                return
+            }
+        }
+        MSG_REGISTRY.add(Triple(clas, protocol, name))
+
+
+        registerMessageClass2(clas,constructor)
+    }
+
+    fun registerMessageClass2(
+        clas: KClass<out Message>,
+        constructor: (String) -> Message?
+    ) {
+        for (i in MSG_REGISTRY2.indices) {
+            if (MSG_REGISTRY2[i].first.equals(clas)) {
+                MSG_REGISTRY2.set(i, Pair(clas, constructor))
+                return
+            }
+        }
+        MSG_REGISTRY2.add(Pair(clas, constructor))
+
+    }
+
+    fun getProtocolAndName(clas: KClass<out Message>): Pair<String?, String?> {
+        for (triple in MSG_REGISTRY) {
+            if (triple.first == clas) {
+                return Pair(triple.second, triple.third)
+            }
+        }
+        return Pair(null, null)
+    }
+
+    fun restoreMessageInstance(payload: String?): Pair<Boolean, Message?> {
+        if(payload==null){
+            return Pair(false, null)
+        }
+        val message: Message = Message(payload)
+        val protocol: String? = message.typeOfType?.protocol
+        val name: String? = message.typeOfType?.name
+        var clssTo: KClass<out Message>? = null
+        for (triple  in MSG_REGISTRY) {
+            if (triple.second.equals(protocol) && (triple.third.equals(name) || triple.third.equals("*"))) {
+                clssTo = triple.first
+            }
+        }
+        if (clssTo != null) {
+            return Pair(true, MessageFabric.restoreMessageInstance(clssTo,payload))
+        }
+        return Pair(false, null)
+    }
+}
+
 open class Message : JsonSerializable<Message> {
     val FIELD_TYPE = "@type"
     val FIELD_ID = "@id"
@@ -147,87 +227,7 @@ open class Message : JsonSerializable<Message> {
         return Message(string ?: "")
     }
 
-    @ThreadLocal
-    companion object {
 
-        fun generateId(): String {
-            return UUID.randomUUID.toString()
-        }
-
-        val MSG_REGISTRY: MutableList<Triple<KClass<out Message>, String, String>> =
-            ArrayList<Triple<KClass<out Message>, String, String>>()
-
-        val MSG_REGISTRY2: MutableList<Pair<KClass<out Message>, (String)->Message?>> =
-            ArrayList<Pair<KClass<out Message>, (String)->Message?>>()
-
-        fun registerMessageClass(clas: KClass<out Message>, protocol: String,constructor: (String)->Message?) {
-            registerMessageClass(clas, protocol, "*",constructor)
-        }
-
-        fun registerMessageClass(
-            clas: KClass<out Message>,
-            protocol: String,
-            name: String?,constructor: (String)->Message?
-        ) {
-            var name = name
-            if (name == null) name = "*"
-
-            for (i in MSG_REGISTRY.indices) {
-                if (MSG_REGISTRY[i].first.equals(clas)) {
-                    MSG_REGISTRY.set(i, Triple(clas, protocol, name))
-                    return
-                }
-            }
-            MSG_REGISTRY.add(Triple(clas, protocol, name))
-
-
-            registerMessageClass2(clas,constructor)
-        }
-
-         fun registerMessageClass2(
-            clas: KClass<out Message>,
-            constructor: (String)->Message?
-        ) {
-            for (i in MSG_REGISTRY2.indices) {
-                if (MSG_REGISTRY2[i].first.equals(clas)) {
-                    MSG_REGISTRY2.set(i, Pair(clas, constructor))
-                    return
-                }
-            }
-            MSG_REGISTRY2.add(Pair(clas, constructor))
-
-        }
-
-        fun getProtocolAndName(clas: KClass<out Message>): Pair<String?, String?> {
-            for (triple in MSG_REGISTRY) {
-                if (triple.first == clas) {
-                    return Pair(triple.second, triple.third)
-                }
-            }
-            return Pair(null, null)
-        }
-
-
-        fun restoreMessageInstance(payload: String?): Pair<Boolean, Message?> {
-            if(payload==null){
-                return Pair(false, null)
-            }
-            val message: Message = Message(payload)
-            val protocol: String? = message.typeOfType?.protocol
-            val name: String? = message.typeOfType?.name
-            var clssTo: KClass<out Message>? = null
-            for (triple  in MSG_REGISTRY) {
-                if (triple.second.equals(protocol) && (triple.third.equals(name) || triple.third.equals("*"))) {
-                    clssTo = triple.first
-                }
-            }
-            if (clssTo != null) {
-                return Pair(true, MessageFabric.restoreMessageInstance(clssTo,payload))
-            }
-            return Pair(false, null)
-        }
-
-    }
 
 
 

@@ -1,30 +1,21 @@
 package com.sirius.library.mobile
 
+import com.sirius.library.agent.wallet.LocalWallet
 import org.hyperledger.indy.sdk.anoncreds.CredentialsSearchForProofReq
 
-class SearchHelper {
+object SearchHelper {
 
-    companion object {
-        private var searchHelper: SearchHelper? = null
-
-        fun getInstance(): SearchHelper {
-            if (searchHelper == null) {
-                searchHelper = SearchHelper()
-            }
-            return searchHelper!!
-        }
-        fun cleanInstance(){
-            searchHelper = null
-        }
+    fun cleanInstance(){
+      //  Companion.searchHelper = null
     }
 
 
 
 
-    fun searchForProofRequest(proofRequest:  String, extraQuery : String? = null){
+    fun searchForProofRequest(proofRequest:  String, extraQuery : String? = null, wallet: LocalWallet){
        val credentialsSearchForProofReq =
             CredentialsSearchForProofReq.open(
-                SiriusSDK.getInstance().walletHelper.myWallet,
+                wallet,
                 proofRequest, extraQuery
             ).get()
     }

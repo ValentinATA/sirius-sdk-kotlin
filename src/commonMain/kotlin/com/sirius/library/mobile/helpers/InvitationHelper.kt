@@ -3,26 +3,18 @@ package com.sirius.library.mobile.helpers
 
 import com.sirius.library.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation
 import com.sirius.library.messaging.Message
+import com.sirius.library.messaging.MessageUtil
 import com.sirius.library.utils.Base64
 import com.sirius.library.utils.StringUtils
 
 
-class InvitationHelper {
+object InvitationHelper {
 
-    companion object {
-        private var invitationHelper: InvitationHelper? = null
-
-        fun getInstance(): InvitationHelper {
-            if (invitationHelper == null) {
-                invitationHelper = InvitationHelper()
-            }
-            return invitationHelper!!
-        }
-
-        fun cleanInstance() {
-            invitationHelper = null
-        }
+    fun cleanInstance() {
+        //invitationHelper = null
     }
+
+
 
 
     /**
@@ -58,7 +50,7 @@ class InvitationHelper {
      */
     fun validateInvitationMessage(url: String): Invitation? {
         try {
-            val message = Message.restoreMessageInstance(url)
+            val message = MessageUtil.restoreMessageInstance(url)
             if (message.first) {
                 if (message.second is Invitation) {
                     return message.second as Invitation

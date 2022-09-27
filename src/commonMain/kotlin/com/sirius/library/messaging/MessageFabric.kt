@@ -17,7 +17,7 @@ class MessageFabric {
 
 
         fun restoreMessageInstance(kClass: KClass<out Message>, payload: String): Message?{
-            for (pair in Message.MSG_REGISTRY2) {
+            for (pair in MessageUtil.MSG_REGISTRY2) {
                 if (pair.first == kClass) {
                     return pair.second.invoke(payload)
                 }
@@ -26,24 +26,24 @@ class MessageFabric {
         }
 
         fun registerAllMessagesClass(){
-           Message.registerMessageClass(com.sirius.library.agent.aries_rfc.feature_0095_basic_message.Message::class, "basicmessage", "message"){
+            MessageUtil.registerMessageClass(com.sirius.library.agent.aries_rfc.feature_0095_basic_message.Message::class, "basicmessage", "message"){
                com.sirius.library.agent.aries_rfc.feature_0095_basic_message.Message(it)
            }
-            Message.registerMessageClass(Ping::class, Ping.PROTOCOL, "ping"){
+            MessageUtil.registerMessageClass(Ping::class, Ping.PROTOCOL, "ping"){
                 Ping(it)
             }
-            Message.registerMessageClass(Pong::class, Pong.PROTOCOL, "ping_response"){
+            MessageUtil.registerMessageClass(Pong::class, Pong.PROTOCOL, "ping_response"){
                 Pong(it)
             }
-            Message.registerMessageClass(Ack::class, Ack.PROTOCOL, "ack"){
+            MessageUtil.registerMessageClass(Ack::class, Ack.PROTOCOL, "ack"){
                 Ack(it)
             }
 
-            Message.registerMessageClass(IssueCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "issue-credential"){
+            MessageUtil.registerMessageClass(IssueCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "issue-credential"){
                 IssueCredentialMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 IssueProblemReport::class,
                 BaseIssueCredentialMessage.PROTOCOL,
                 "problem_report"
@@ -51,22 +51,22 @@ class MessageFabric {
                 IssueProblemReport(it)
             }
 
-            Message.registerMessageClass(OfferCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "offer-credential"){
+            MessageUtil.registerMessageClass(OfferCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "offer-credential"){
                 OfferCredentialMessage(it)
             }
-            Message.registerMessageClass(ProposeCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "propose-credential"){
+            MessageUtil.registerMessageClass(ProposeCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "propose-credential"){
                 ProposeCredentialMessage(it)
             }
 
-            Message.registerMessageClass(RequestCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "request-credential"){
+            MessageUtil.registerMessageClass(RequestCredentialMessage::class, BaseIssueCredentialMessage.PROTOCOL, "request-credential"){
                 RequestCredentialMessage(it)
             }
 
-            Message.registerMessageClass(PresentationMessage::class, BasePresentProofMessage.PROTOCOL, "presentation"){
+            MessageUtil.registerMessageClass(PresentationMessage::class, BasePresentProofMessage.PROTOCOL, "presentation"){
                 PresentationMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 PresentProofProblemReport::class,
                 BasePresentProofMessage.PROTOCOL,
                 "problem_report"
@@ -74,15 +74,15 @@ class MessageFabric {
                 PresentProofProblemReport(it)
             }
 
-            Message.registerMessageClass(RequestPresentationMessage::class, BasePresentProofMessage.PROTOCOL, "request-presentation"){
+            MessageUtil.registerMessageClass(RequestPresentationMessage::class, BasePresentProofMessage.PROTOCOL, "request-presentation"){
                 RequestPresentationMessage(it)
             }
 
-            Message.registerMessageClass(AnswerMessage::class, "questionanswer", "answer"){
+            MessageUtil.registerMessageClass(AnswerMessage::class, "questionanswer", "answer"){
                 AnswerMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 QuestionMessage::class,
                 "questionanswer",
                 "question"
@@ -90,42 +90,42 @@ class MessageFabric {
                 QuestionMessage(it)
             }
 
-            Message.registerMessageClass(ConnProblemReport::class, ConnProtocolMessage.PROTOCOL, "problem_report"){
+            MessageUtil.registerMessageClass(ConnProblemReport::class, ConnProtocolMessage.PROTOCOL, "problem_report"){
                 ConnProblemReport(it)
             }
 
-            Message.registerMessageClass(ConnRequest::class, ConnProtocolMessage.PROTOCOL, "request"){
+            MessageUtil.registerMessageClass(ConnRequest::class, ConnProtocolMessage.PROTOCOL, "request"){
                 ConnRequest(it)
             }
 
-            Message.registerMessageClass(ConnResponse::class, ConnProtocolMessage.PROTOCOL, "response"){
+            MessageUtil.registerMessageClass(ConnResponse::class, ConnProtocolMessage.PROTOCOL, "response"){
                 ConnResponse(it)
             }
 
-            Message.registerMessageClass(Invitation::class, ConnProtocolMessage.PROTOCOL, "invitation"){
+            MessageUtil.registerMessageClass(Invitation::class, ConnProtocolMessage.PROTOCOL, "invitation"){
                 Invitation(it)
             }
 
-            Message.registerMessageClass(KeylistUpdate::class, CoordinateMediationMessage.PROTOCOL, "keylist-update"){
+            MessageUtil.registerMessageClass(KeylistUpdate::class, CoordinateMediationMessage.PROTOCOL, "keylist-update"){
                 KeylistUpdate(it)
             }
 
-            Message.registerMessageClass(KeylistUpdateResponse::class, CoordinateMediationMessage.PROTOCOL, "keylist-update-response"){
+            MessageUtil.registerMessageClass(KeylistUpdateResponse::class, CoordinateMediationMessage.PROTOCOL, "keylist-update-response"){
                 KeylistUpdateResponse(it)
             }
 
-            Message.registerMessageClass(MediateDeny::class, CoordinateMediationMessage.PROTOCOL, "mediate-deny"){
+            MessageUtil.registerMessageClass(MediateDeny::class, CoordinateMediationMessage.PROTOCOL, "mediate-deny"){
                 MediateDeny(it)
             }
-            Message.registerMessageClass(MediateGrant::class, CoordinateMediationMessage.PROTOCOL, "mediate-grant"){
+            MessageUtil.registerMessageClass(MediateGrant::class, CoordinateMediationMessage.PROTOCOL, "mediate-grant"){
                 MediateGrant(it)
             }
 
-            Message.registerMessageClass(MediateRequest::class, CoordinateMediationMessage.PROTOCOL, "mediate-request"){
+            MessageUtil.registerMessageClass(MediateRequest::class, CoordinateMediationMessage.PROTOCOL, "mediate-request"){
                 MediateRequest(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 BaseInitLedgerMessage::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "initialize"
@@ -133,11 +133,11 @@ class MessageFabric {
                 BaseInitLedgerMessage(it)
             }
 
-            Message.registerMessageClass(BaseTransactionsMessage::class, SimpleConsensusMessage.PROTOCOL, "stage"){
+            MessageUtil.registerMessageClass(BaseTransactionsMessage::class, SimpleConsensusMessage.PROTOCOL, "stage"){
                 BaseTransactionsMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 CommitTransactionsMessage::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "stage-commit"
@@ -145,7 +145,7 @@ class MessageFabric {
                 CommitTransactionsMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 InitRequestLedgerMessage::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "initialize-request"
@@ -153,7 +153,7 @@ class MessageFabric {
                 InitRequestLedgerMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 InitResponseLedgerMessage::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "initialize-response"
@@ -161,7 +161,7 @@ class MessageFabric {
                 InitResponseLedgerMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 PostCommitTransactionsMessage::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "stage-post-commit"
@@ -169,7 +169,7 @@ class MessageFabric {
                 PostCommitTransactionsMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 PreCommitTransactionsMessage::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "stage-pre-commit"
@@ -177,7 +177,7 @@ class MessageFabric {
                 PreCommitTransactionsMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 ProposeTransactionsMessage::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "stage-propose"
@@ -185,7 +185,7 @@ class MessageFabric {
                 ProposeTransactionsMessage(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 SimpleConsensusProblemReport::class,
                 SimpleConsensusMessage.PROTOCOL,
                 "problem_report"
@@ -193,7 +193,7 @@ class MessageFabric {
                 SimpleConsensusProblemReport(it)
             }
 
-            Message.registerMessageClass(
+            MessageUtil.registerMessageClass(
                 PresentationAck::class,
                 BasePresentProofMessage.PROTOCOL,
                 "ack"

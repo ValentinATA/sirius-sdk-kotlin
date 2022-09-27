@@ -25,7 +25,7 @@ object Persistent0160 {
             receiveRequest(
                 context,
                 event.message() as ConnRequest,
-                event.recipientVerkey ?:"",
+                event.recipientVerkey ?: "",
                 context.endpointWithEmptyRoutingKeys
             )
         } else return if (event.message() is ConnResponse) {
@@ -43,6 +43,8 @@ object Persistent0160 {
                 invitation.getDocUri()!!
             ).build()
         val connectionKey = invitation.recipientKeys()[0]
+        request.setPleaseAck(true)
+        request.messageObj.put("recipient_verkey", connectionKey)
         val pairwise: JSONObject = JSONObject().put(
             "me", JSONObject().put("did", first).put(
                 "verkey",
@@ -59,18 +61,18 @@ object Persistent0160 {
         )
     }
 
-    private fun receiveRequest(
+    fun receiveRequest(
         context: Context<*>,
         request: ConnRequest,
         connectionKeyBase58: String,
         myEndpoint: Endpoint?
-    ) {
+    ): ConnResponse? {
         val theirInfo: ExtractTheirInfoRes
         theirInfo = try {
             request.extractTheirInfo()
         } catch (e: SiriusInvalidMessage) {
             e.printStackTrace()
-            return
+            return null
         }
         val (first, second) = context.did.createAndStoreMyDid()
         val response = ConnResponse.builder().setDid(first).setVerkey(second)
@@ -82,6 +84,7 @@ object Persistent0160 {
         } else {
             response.setThreadId(request.getId())
         }
+
         response.setPleaseAck(true)
         val myDidDoc = response.didDoc()
         val theirDidDoc: JSONObject = request.didDoc()!!.payload
@@ -105,9 +108,10 @@ object Persistent0160 {
                 ).put("did_doc", theirDidDoc)
         )
         write(context, connectionKeyBase58, pairwise)
+        return response
     }
 
-    private fun receiveResponse(context: Context<*>, response: ConnResponse): Pairwise? {
+    fun receiveResponse(context: Context<*>, response: ConnResponse): Pairwise? {
         if (!response.verifyConnection(context.crypto)) return null
         val connectionKey =
             response.messageObj.getJSONObject("connection~sig")!!.optString("signer")
@@ -119,7 +123,8 @@ object Persistent0160 {
             return null
         }
         context.did.storeTheirDid(theirInfo?.did, theirInfo?.verkey)
-        val myVk: String? = optValueByConnectionKey(context, connectionKey)?.optJSONObject("me")?.optString("verkey")
+        val myVk: String? = optValueByConnectionKey(context, connectionKey)?.optJSONObject("me")
+            ?.optString("verkey")
         if (response.hasPleaseAck()) {
             val ack = Ack.builder().setStatus(Ack.Status.OK).build()
             ack.setThreadId(response.getAckMessageId())
@@ -144,7 +149,9 @@ object Persistent0160 {
         }
         val their: JSONObject =
             JSONObject().put("did", theirInfo?.did).put("verkey", theirInfo?.verkey).put(
-                "label", optValueByConnectionKey(context, connectionKey)?.optJSONObject("their")?.optString("label")
+                "label",
+                optValueByConnectionKey(context, connectionKey)?.optJSONObject("their")
+                    ?.optString("label")
             ).put(
                 "endpoint",
                 JSONObject().put("address", theirInfo?.endpoint)
@@ -157,7 +164,7 @@ object Persistent0160 {
         return pairwise
     }
 
-    private fun receiveAck(context: Context<*>, event: Event): Pairwise? {
+    fun receiveAck(context: Context<*>, event: Event): Pairwise? {
         val senderVk: String? = event.senderVerkey
         val connectionKey: String? = optConnectionKeyByTheirVerkey(context, senderVk)
         if (connectionKey?.isEmpty() == true) return null
@@ -175,7 +182,7 @@ object Persistent0160 {
         )
         val routingKeys: MutableList<String> = ArrayList()
         val kor = o?.optJSONObject("their")?.optJSONObject("endpoint")
-        ?.optJSONArray("routing_keys") ?: JSONArray()
+            ?.optJSONArray("routing_keys") ?: JSONArray()
         for (k in kor) routingKeys.add(k as String)
         val their = Pairwise.Their(
             o?.optJSONObject("their")?.optString("did"),

@@ -5,6 +5,7 @@ import com.sirius.library.agent.connections.RoutingBatch
 import com.sirius.library.agent.pairwise.Pairwise
 import com.sirius.library.errors.sirius_exceptions.*
 import com.sirius.library.messaging.Message
+import com.sirius.library.messaging.MessageUtil
 import com.sirius.library.messaging.Type
 import com.sirius.library.utils.Date
 import com.sirius.library.utils.JSONObject
@@ -151,7 +152,7 @@ abstract class AbstractCloudCoProtocolTransport(rpc: AgentRPC) : AbstractCoProto
         return if (payload != null) {
             var okMsg: Pair<Boolean, Message?> = Pair(false, null)
             try {
-                okMsg = Message.restoreMessageInstance(payload.toString())
+                okMsg = MessageUtil.restoreMessageInstance(payload.toString())
             } catch (e:Exception) {
                 e.printStackTrace()
             }
@@ -183,7 +184,7 @@ abstract class AbstractCloudCoProtocolTransport(rpc: AgentRPC) : AbstractCoProto
             var message: Message? = null
             if (event?.messageObjectHasKey("message")==true) {
                 try {
-                    val (first, second) = Message.restoreMessageInstance(
+                    val (first, second) = MessageUtil.restoreMessageInstance(
                         event.getMessageObjec().get("message").toString()
                     )
                     if (first) {

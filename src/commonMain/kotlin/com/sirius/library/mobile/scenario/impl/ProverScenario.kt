@@ -49,15 +49,16 @@ abstract class ProverScenario(val eventStorage : EventStorageAbstract) : BaseSce
         val event = eventStorage.getEvent(id)
         val requestPresentation = event?.second as? RequestPresentationMessage
         val ttl = 60
-        val pairwise = PairwiseHelper.getInstance().getPairwise(event?.first)
+        val pairwise = PairwiseHelper.getPairwise(event?.first)
+            //FIXMe Label not good idea here
         val masterSecretId: String =
-            HashUtils.generateHash(SiriusSDK.getInstance().label?:"")
+            HashUtils.generateHash(SiriusSDK.label?:"")
         println("prover masterSecretId="+masterSecretId)
         // val proverLedger: Ledger? = SiriusSDK.getInstance().context.getLedgers().get("default")
         // proverLedger?.let {
         var machine :Prover? =null
             if(pairwise!=null){
-            machine = Prover(SiriusSDK.getInstance().context, pairwise, masterSecretId,poolName)
+            machine = SiriusSDK.context?.let { Prover(it, pairwise, masterSecretId,poolName) }
         }
         var isProved = false
         try{

@@ -9,33 +9,23 @@ import com.sirius.library.agent.pairwise.Pairwise
 import com.sirius.library.agent.pairwise.WalletPairwiseList
 import com.sirius.library.mobile.SiriusSDK
 import com.sirius.library.mobile.models.CredentialsRecord
-import com.sirius.library.rpc.Future
 import com.sirius.library.utils.JSONObject
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
-class PairwiseHelper {
+object PairwiseHelper {
 
-    companion object {
-        private var pairwiseHelper: PairwiseHelper? = null
-
-
-        fun getInstance(): PairwiseHelper {
-            if (pairwiseHelper == null) {
-                pairwiseHelper = PairwiseHelper()
-            }
-            return pairwiseHelper!!
-        }
-        fun cleanInstance(){
-            pairwiseHelper = null
-        }
+    fun cleanInstance(){
+        //pairwiseHelper = null
     }
+
+
 
 
     fun getAllPairwise(): List<Pairwise> {
         val list =
-            (SiriusSDK.getInstance().context.currentHub.agent?.wallet?.pairwise?.listPairwise() as? List<String>).orEmpty()
+            (SiriusSDK.context?.currentHub?.agent?.wallet?.pairwise?.listPairwise() as? List<String>).orEmpty()
         val mutableList: MutableList<Pairwise> = mutableListOf()
         list.forEach {
             val pairwiseObj = JSONObject(it)
@@ -53,7 +43,7 @@ class PairwiseHelper {
 
     fun getAllCredentials(): List<CredentialsRecord> {
         val list =
-            (SiriusSDK.getInstance().context.currentHub.agent?.wallet?.anoncreds?.proverGetCredentials("{}"))
+            (SiriusSDK.context?.currentHub?.agent?.wallet?.anoncreds?.proverGetCredentials("{}"))
         return list?.mapNotNull {
            return@mapNotNull Json.decodeFromString<CredentialsRecord>(it?:"")
 
@@ -63,13 +53,13 @@ class PairwiseHelper {
 
     fun getPairwise(theirDid: String? = null, theirVerkey: String? = null): Pairwise? {
         if (!theirDid.isNullOrEmpty()) {
-            val pairwise =  SiriusSDK.getInstance().context.currentHub.pairwiseList?.loadForDid(theirDid)
+            val pairwise =  SiriusSDK.context?.currentHub?.pairwiseList?.loadForDid(theirDid)
            pairwise?.let {
                return it
            }
         }
         if (!theirVerkey.isNullOrEmpty()) {
-            return SiriusSDK.getInstance().context.currentHub.pairwiseList?.loadForVerkey(theirVerkey)
+            return SiriusSDK.context?.currentHub?.pairwiseList?.loadForVerkey(theirVerkey)
         }
         return null;
     }

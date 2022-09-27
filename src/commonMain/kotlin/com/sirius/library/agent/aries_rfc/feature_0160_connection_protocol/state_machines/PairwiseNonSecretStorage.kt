@@ -11,32 +11,42 @@ internal object PairwiseNonSecretStorage {
         context: Context<*>,
         connectionKeyBase58: String?
     ): JSONObject? {
-        val query = JSONObject()
-        query.put("connectionKey", connectionKeyBase58)
-        val opts = RetrieveRecordOptions(false, true, false)
-        val (first, second) = context.nonSecrets
-            .walletSearch(NON_SECRET_PERSISTENT_0160_PW, query.toString(), opts, 1)
-        return if (second !== 1) null else
-            JSONObject(
+        try {
+            val query = JSONObject()
+            query.put("connectionKey", connectionKeyBase58)
+            val opts = RetrieveRecordOptions(false, true, false)
+            val (first, second) = context.nonSecrets
+                .walletSearch(NON_SECRET_PERSISTENT_0160_PW, query.toString(), opts, 1)
+            return if (second !== 1) null else
                 JSONObject(
-                    first.get(0)
-                ).optString("value")
-            )
+                    JSONObject(
+                        first.get(0)
+                    ).optString("value")
+                )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     fun optConnectionKeyByTheirVerkey(context: Context<*>, theirVerkey: String?): String? {
-        val query = JSONObject()
-        query.put("theirVk", theirVerkey)
-        val opts = RetrieveRecordOptions(false, false, true)
-        val (first, second) = context.nonSecrets
-            .walletSearch(NON_SECRET_PERSISTENT_0160_PW, query.toString(), opts, 1)
-        return if (second === 0 ) null else
-            JSONObject(
-                JSONObject(
-                    first.get(0)
-                ).optString("tags")
-            ).optString("connectionKey")
-
+        try {
+            val query = JSONObject()
+            query.put("theirVk", theirVerkey)
+            val opts = RetrieveRecordOptions(false, false, true)
+            val (first, second) = context.nonSecrets
+                .walletSearch(NON_SECRET_PERSISTENT_0160_PW, query.toString(), opts, 1)
+            val firstF = first
+            val secondF = second
+            if (firstF.isNotEmpty()) {
+                val jsonObject = JSONObject(first.get(0))
+                val tagsJsonObject = jsonObject.optJSONObject("tags")
+                return tagsJsonObject?.optString("connectionKey")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     fun write(context: Context<*>, connectionKeyBase58: String?, pairwise: JSONObject) {
@@ -46,7 +56,7 @@ internal object PairwiseNonSecretStorage {
         }
         val tags: JSONObject =
             JSONObject().put("connectionKey", connectionKeyBase58).put("theirVk", theirVk)
-        if (optValueByConnectionKey(context, connectionKeyBase58)!=null) {
+        if (optValueByConnectionKey(context, connectionKeyBase58) != null) {
             context.nonSecrets.updateWalletRecordValue(
                 NON_SECRET_PERSISTENT_0160_PW,
                 connectionKeyBase58,
@@ -68,7 +78,7 @@ internal object PairwiseNonSecretStorage {
     }
 
     fun remove(context: Context<*>, connectionKeyBase58: String?) {
-        if (optValueByConnectionKey(context, connectionKeyBase58)!=null) {
+        if (optValueByConnectionKey(context, connectionKeyBase58) != null) {
             context.nonSecrets
                 .deleteWalletRecord(NON_SECRET_PERSISTENT_0160_PW, connectionKeyBase58)
         }

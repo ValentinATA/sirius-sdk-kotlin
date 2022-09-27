@@ -4,6 +4,7 @@ package com.sirius.library.mobile.scenario.impl
 import com.sirius.library.agent.aries_rfc.feature_0160_connection_protocol.messages.ConnProblemReport
 import com.sirius.library.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation
 import com.sirius.library.agent.aries_rfc.feature_0160_connection_protocol.state_machines.Invitee
+import com.sirius.library.agent.aries_rfc.feature_0160_connection_protocol.state_machines.Persistent0160
 import com.sirius.library.agent.connections.Endpoint
 import com.sirius.library.agent.listener.Event
 import com.sirius.library.agent.pairwise.Pairwise
@@ -39,30 +40,32 @@ abstract class InviteeScenario(val eventStorage: EventStorageAbstract) : BaseSce
         actionListener?.onActionEnd(EventAction.cancel, id, null, false, cause)
     }
 
-    fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
+    open fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
         actionListener?.onActionStart(EventAction.accept, id, comment)
         val event = eventStorage.getEvent(id)
         val invitation = event?.second as? Invitation
-        val didVerkey = SiriusSDK.getInstance().context.did.createAndStoreMyDid()
-        var myDid = didVerkey.first
-        var myConnectionKey = didVerkey.second
+        val didVerkey = SiriusSDK.context?.did?.createAndStoreMyDid()
+        var myDid = didVerkey?.first
+        var myConnectionKey = didVerkey?.second
         val me = Pairwise.Me(myDid, myConnectionKey)
         var pairwise: Pairwise? = null
         var error: String? = null
         if (invitation != null) {
-            val machine = Invitee(
-                SiriusSDK.getInstance().context,
-                me,
-                SiriusSDK.getInstance().context.endpointWithEmptyRoutingKeys ?: Endpoint("")
-            )
+            val machine = SiriusSDK.context?.let {
+                Invitee(
+                    it,
+                    me,
+                    it.endpointWithEmptyRoutingKeys ?: Endpoint("")
+                )
+            }
             pairwise =
-                machine.createConnection(invitation, SiriusSDK.getInstance().label)
+                machine?.createConnection(invitation, SiriusSDK.label)
             pairwise?.let {
-                SiriusSDK.getInstance().context.pairwiseList.ensureExists(it)
+                SiriusSDK.context?.pairwiseList?.ensureExists(it)
             }
 
             if (pairwise == null) {
-                val problemReport: ConnProblemReport? = machine.problemReport
+                val problemReport: ConnProblemReport? = machine?.problemReport
                 problemReport?.let {
                     error = problemReport.explain
                 }

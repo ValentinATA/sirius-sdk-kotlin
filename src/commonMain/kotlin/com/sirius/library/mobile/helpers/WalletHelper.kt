@@ -10,31 +10,17 @@ import com.sirius.library.hub.MobileContext
 /**
  * Important helper class to work with wallet inside SDK
  */
-class WalletHelper constructor(
-
-) {
-
-    companion object {
-        private var instanceWalletHelper: WalletHelper? = null
-
-
-        fun getInstance(): WalletHelper {
-            if (instanceWalletHelper == null) {
-                instanceWalletHelper = WalletHelper()
-            }
-            return instanceWalletHelper!!
-        }
-
-        fun cleanInstance(){
-            instanceWalletHelper = null
-        }
+object WalletHelper  {
+    fun cleanInstance(){
+       // instanceWalletHelper = null
     }
+
 
 
     val OPEN_WALLET_REQUEST_CODE = 1007
     val SCAN_INVITATION_WALLET_REQUEST_CODE = 1009
     var myWallet: LocalWallet? = null
-    lateinit var context: MobileContext
+    var context: MobileContext? = null
     private var dirPath: String = "wallet"
     private var exportdirPath: String = "export"
     private var genesisPath: String = "genesis"
@@ -437,14 +423,14 @@ class WalletHelper constructor(
 
     }
     fun open(){
-        context.currentHub.agent?.open()
+        context?.currentHub?.agent?.open()
     }
 
 
 
 
     fun closeWallet() {
-        context.close()
+        context?.close()
        /* try {
             myWallet?.closeWallet()
             myWallet = null

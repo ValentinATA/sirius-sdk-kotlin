@@ -11,7 +11,6 @@ import com.sirius.library.messaging.Message
 import com.sirius.library.mobile.SiriusSDK
 import com.sirius.library.mobile.scenario.BaseScenario
 import com.sirius.library.mobile.scenario.EventStorageAbstract
-import com.sirius.library.mobile.scenario.EventTransform
 import kotlin.reflect.KClass
 
 abstract class InviterScenario(val eventStorage: EventStorageAbstract) : BaseScenario() {
@@ -20,12 +19,12 @@ abstract class InviterScenario(val eventStorage: EventStorageAbstract) : BaseSce
 
 
     open fun generateInvitation(serverUri : String)  : String{
-        val verkey = SiriusSDK.getInstance().context.crypto.createKey()
+        val verkey = SiriusSDK.context?.crypto?.createKey()
         connectionKey =  verkey
-        val myEndpoint : Endpoint = SiriusSDK.getInstance().context.endpointWithEmptyRoutingKeys
+        val myEndpoint : Endpoint = SiriusSDK.context?.endpointWithEmptyRoutingKeys
             ?: return ""
         val invitation = Invitation.builder()
-            .setLabel(SiriusSDK.getInstance().label)
+            .setLabel(SiriusSDK.label)
             .setRecipientKeys(listOfNotNull(verkey)).setEndpoint(myEndpoint.address).build()
         val qrContent = serverUri + invitation.invitationUrl()
         return qrContent
@@ -39,14 +38,14 @@ abstract class InviterScenario(val eventStorage: EventStorageAbstract) : BaseSce
 
     override fun start(event: Event) : Pair<Boolean,String?> {
         val request = event.message() as ConnRequest
-        val didVerkey = SiriusSDK.getInstance().context.did.createAndStoreMyDid()
-        var did = didVerkey.first
-        var verkey = didVerkey.second
+        val didVerkey = SiriusSDK.context?.did?.createAndStoreMyDid()
+        var did = didVerkey?.first
+        var verkey = didVerkey?.second
         val inviterMe = Pairwise.Me(did, verkey)
-        val machine = Inviter(SiriusSDK.getInstance().context, inviterMe, connectionKey?:"", SiriusSDK.getInstance().context.endpointWithEmptyRoutingKeys?: Endpoint(""))
-        val pairwise : Pairwise? = machine.createConnection(request)
+        val machine = SiriusSDK.context?.let { Inviter(it, inviterMe, connectionKey?:"", SiriusSDK.context?.endpointWithEmptyRoutingKeys?: Endpoint("")) }
+        val pairwise : Pairwise? = machine?.createConnection(request)
         pairwise?.let {
-            SiriusSDK.getInstance().context.pairwiseList.ensureExists(it)
+            SiriusSDK.context?.pairwiseList?.ensureExists(it)
             val theirDid = it.their.did
             val pair =  Pair(theirDid, event.message())
             eventStorage.eventStore(request.getId() ?:"", pair, false)

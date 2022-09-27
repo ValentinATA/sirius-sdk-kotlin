@@ -2,6 +2,7 @@ package com.sirius.library.agent.aries_rfc
 
 import com.sirius.library.errors.sirius_exceptions.SiriusValidationError
 import com.sirius.library.messaging.Message
+import com.sirius.library.messaging.MessageUtil
 import com.sirius.library.messaging.Type
 import com.sirius.library.utils.JSONObject
 import kotlin.reflect.KClass
@@ -80,13 +81,14 @@ abstract class AriesProtocolMessage : Message {
             return self()
         }
 
+
         protected abstract fun self(): B
         open fun generateJSON(): JSONObject {
             val jsonObject = JSONObject()
-            val (first, second) = Message.getProtocolAndName(getClass())
+            val (first, second) = MessageUtil.getProtocolAndName(getClass())
             println("generateJSON()="+"docUri="+docUri+" first="+first)
             jsonObject.put("@type", Type(docUri, first?:"", version, second?:"").typeString)
-            jsonObject.put("@id", if (id == null) generateId() else id)
+            jsonObject.put("@id", if (id == null) MessageUtil.generateId() else id)
             return jsonObject
         }
     }

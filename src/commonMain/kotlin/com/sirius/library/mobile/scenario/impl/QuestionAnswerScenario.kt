@@ -54,14 +54,16 @@ abstract class QuestionAnswerScenario(val eventStorage : EventStorageAbstract) :
     fun accept(id: String, comment: String?,actionListener: EventActionListener?) {
         val event = eventStorage.getEvent(id)
         val questionMessage = event?.second as? QuestionMessage
-        val pairwise = PairwiseHelper.getInstance().getPairwise(event?.first)
+        val pairwise = PairwiseHelper.getPairwise(event?.first)
         if(questionMessage!=null && pairwise!=null){
-            Recipes.makeAnswer(
-                SiriusSDK.getInstance().context,
-                comment,
-                questionMessage,
-                pairwise
-            )
+            SiriusSDK.context?.let {
+                Recipes.makeAnswer(
+                    it,
+                    comment,
+                    questionMessage,
+                    pairwise
+                )
+            }
         }
     }
 
