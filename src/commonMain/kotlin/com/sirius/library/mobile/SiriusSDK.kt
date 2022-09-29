@@ -125,7 +125,10 @@ object SiriusSDK {
         recipientKeys: List<String>,
         label: String, poolName : String?,baseSender: BaseSender
     ) {
-        LibsodiumInitializer.initialize()
+
+        if(!LibsodiumInitializer.isInitialized()){
+            LibsodiumInitializer.initialize()
+        }
         this.label = label
         initAllMessages()
         //   LibIndy.setRuntimeConfig("{\"collect_backtrace\": true }")

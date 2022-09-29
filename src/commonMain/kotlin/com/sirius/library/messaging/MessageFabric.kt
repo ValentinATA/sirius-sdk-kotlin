@@ -12,8 +12,8 @@ import com.sirius.library.agent.aries_rfc.feature_0211_mediator_coordination_pro
 import com.sirius.library.agent.consensus.simple.messages.*
 import kotlin.reflect.KClass
 
-class MessageFabric {
-    companion object {
+object MessageFabric {
+
 
 
         fun restoreMessageInstance(kClass: KClass<out Message>, payload: String): Message?{
@@ -201,5 +201,5 @@ class MessageFabric {
                 PresentationAck(it)
             }
         }
-    }
+
 }

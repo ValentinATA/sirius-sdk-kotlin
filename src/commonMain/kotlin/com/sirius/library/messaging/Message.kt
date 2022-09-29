@@ -35,8 +35,8 @@ import kotlin.reflect.KClass
         if (name == null) name = "*"
 
         for (i in MSG_REGISTRY.indices) {
-            if (MSG_REGISTRY[i].first.equals(clas)) {
-                MSG_REGISTRY.set(i, Triple(clas, protocol, name))
+            if (MSG_REGISTRY[i].first == clas) {
+                MSG_REGISTRY[i] = Triple(clas, protocol, name)
                 return
             }
         }
