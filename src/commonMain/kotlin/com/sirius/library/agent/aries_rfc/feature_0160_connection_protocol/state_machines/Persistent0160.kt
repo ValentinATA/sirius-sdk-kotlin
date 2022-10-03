@@ -167,8 +167,8 @@ object Persistent0160 {
     fun receiveAck(context: Context<*>, event: Event): Pairwise? {
         val senderVk: String? = event.senderVerkey
         val connectionKey: String? = optConnectionKeyByTheirVerkey(context, senderVk)
-        if (connectionKey?.isEmpty() == true) return null
-        val jsonPw: JSONObject? = optValueByConnectionKey(context, connectionKey)
+        if (connectionKey.isNullOrEmpty()) return null
+        val jsonPw: JSONObject = optValueByConnectionKey(context, connectionKey) ?: return null
         val pairwise: Pairwise = createPairwiseObject(jsonPw)
         remove(context, connectionKey)
         return pairwise
