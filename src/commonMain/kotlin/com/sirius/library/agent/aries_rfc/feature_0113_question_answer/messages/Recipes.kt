@@ -28,7 +28,7 @@ object Recipes {
         return null
     }
 
-    fun makeAnswer(context: Context<*>, response: String?, question: QuestionMessage, to: Pairwise) {
+    suspend fun makeAnswer(context: Context<*>, response: String?, question: QuestionMessage, to: Pairwise) {
         val answer = AnswerMessage.builder().setResponse(response).build()
         answer.setThreadId(question.getId())
         answer.setOutTime()

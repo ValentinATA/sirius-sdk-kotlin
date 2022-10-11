@@ -164,7 +164,7 @@ object SiriusSDK {
 
     }
 
-    fun connectToMediator(firebaseId: String? = null) {
+    suspend fun connectToMediator(firebaseId: String? = null) {
         if(firebaseId.isNullOrEmpty()){
             context?.connectToMediator(this.label)
         }else{

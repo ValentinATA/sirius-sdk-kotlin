@@ -572,17 +572,18 @@ abstract class Context<T: AbstractHub> internal constructor(hub: T) : Closeable 
         return currentHub.agentConnectionLazy?.subscribe()
     }
 
-    fun sendTo(message: Message, to: Pairwise) {
-        currentHub.agentConnectionLazy?.sendTo(message, to)
+    suspend fun sendTo(message: Message, to: Pairwise) : Boolean {
+        return currentHub.agentConnectionLazy?.sendTo(message, to) ?: false
     }
 
-    open fun sendMessage(
+    open suspend fun sendMessage (
         message: Message?, theirVk: List<String?>?,
         endpoint: String?, myVk: String?, routingKeys: List<String?>?
-    ) {
+    ): Boolean {
         endpoint?.let {
-            currentHub.agentConnectionLazy?.sendMessage(message, theirVk, endpoint, myVk, routingKeys)
+           return currentHub.agentConnectionLazy?.sendMessage(message, theirVk, endpoint, myVk, routingKeys) ?: false
         }
+        return false
     }
 
     fun acquire(

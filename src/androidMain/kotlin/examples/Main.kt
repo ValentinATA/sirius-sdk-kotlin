@@ -19,6 +19,9 @@ import com.sirius.library.messaging.MessageFabric
 import com.sirius.library.utils.Date
 import com.sirius.library.utils.JSONArray
 import com.sirius.library.utils.JSONObject
+import com.sodium.LibSodium
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.jvm.JvmStatic
 
 object Main {
@@ -121,16 +124,18 @@ object Main {
                     // Establish connection with Sirius Communicator via standard Aries protocol
                     // https://github.com/hyperledger/aries-rfcs/blob/master/features/0160-connection-protocol/README.md#states
                     val sm = Inviter(context, Pairwise.Me(myDid, myVerkey), connectionKey, myEndpoint)
-                    val p2p: Pairwise? = sm.createConnection(request)
-                    if (p2p != null) {
-                        // Ensure pairwise is stored
-                        context.pairwiseList.ensureExists(p2p)
-                        val hello: Message =
-                            Message.builder().setContent("Привет в новый МИР!!!" + Date().toString()).setLocale("ru")
-                                .build()
-                        println("Sending hello")
-                        context.sendTo(hello, p2p)
-                        println("sended")
+                    GlobalScope.launch {
+                        val p2p: Pairwise? = sm.createConnection(request)
+                        if (p2p != null) {
+                            // Ensure pairwise is stored
+                            context.pairwiseList.ensureExists(p2p)
+                            val hello: Message =
+                                Message.builder().setContent("Привет в новый МИР!!!" + Date().toString()).setLocale("ru")
+                                    .build()
+                            println("Sending hello")
+                            context.sendTo(hello, p2p)
+                            println("sended")
+                        }
                     }
                 }
             }

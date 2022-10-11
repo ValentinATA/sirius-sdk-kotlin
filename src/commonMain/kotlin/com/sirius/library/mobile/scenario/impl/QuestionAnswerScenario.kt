@@ -51,7 +51,7 @@ abstract class QuestionAnswerScenario(val eventStorage : EventStorageAbstract) :
     }
 
 
-    fun accept(id: String, comment: String?,actionListener: EventActionListener?) {
+    suspend fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
         val event = eventStorage.getEvent(id)
         val questionMessage = event?.second as? QuestionMessage
         val pairwise = PairwiseHelper.getPairwise(event?.first)
