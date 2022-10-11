@@ -68,7 +68,7 @@ abstract class Persistent0160Scenario(val eventStorage: EventStorageAbstract) : 
     }
 
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         val message = event.message()
         if (message is ConnResponse) {
 

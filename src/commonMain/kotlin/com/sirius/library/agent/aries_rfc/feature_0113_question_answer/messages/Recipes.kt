@@ -5,7 +5,7 @@ import com.sirius.library.hub.Context
 import com.sirius.library.hub.coprotocols.CoProtocolThreadedP2P
 
 object Recipes {
-    fun askAndWaitAnswer(context: Context<*>, question: QuestionMessage, to: Pairwise): AnswerMessage? {
+    suspend fun askAndWaitAnswer(context: Context<*>, question: QuestionMessage, to: Pairwise): AnswerMessage? {
         var ttlSec = 60
         if (question.expiresTime != null) {
             ttlSec = -1

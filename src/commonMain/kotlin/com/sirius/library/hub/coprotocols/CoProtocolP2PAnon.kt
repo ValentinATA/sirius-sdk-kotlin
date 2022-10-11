@@ -10,6 +10,7 @@ import com.sirius.library.errors.sirius_exceptions.SiriusPendingOperation
 import com.sirius.library.hub.Context
 import com.sirius.library.messaging.Message
 import com.sirius.library.utils.JSONObject
+import kotlin.coroutines.cancellation.CancellationException
 
 class CoProtocolP2PAnon(
     context: Context<*>,
@@ -21,14 +22,14 @@ class CoProtocolP2PAnon(
     AbstractP2PCoProtocol(context) {
     var threadId = ""
 
-    @Throws(SiriusPendingOperation::class)
-    override fun send(message: Message) {
+    @Throws(SiriusPendingOperation::class, CancellationException::class)
+    override suspend fun send(message: Message): Boolean {
         setup(message, false)
-        transportLazy?.send(message)
+        return transportLazy?.send(message) ?: false
     }
 
-    @Throws(SiriusInvalidPayloadStructure::class, SiriusInvalidMessage::class, SiriusPendingOperation::class)
-    override fun sendAndWait(message: Message): Pair<Boolean, Message?> {
+    @Throws(SiriusInvalidPayloadStructure::class, SiriusInvalidMessage::class, SiriusPendingOperation::class,CancellationException::class)
+    override suspend fun sendAndWait(message: Message): Pair<Boolean, Message?> {
         setup(message)
         val res: Pair<Boolean, Message?> = transportLazy?.sendAndWait(message) ?: Pair<Boolean, Message?>(false, null)
         println("sendAndWait res="+res)

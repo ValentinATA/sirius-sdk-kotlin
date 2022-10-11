@@ -7,6 +7,7 @@ import com.sirius.library.errors.sirius_exceptions.SiriusInvalidPayloadStructure
 import com.sirius.library.errors.sirius_exceptions.SiriusPendingOperation
 import com.sirius.library.messaging.Message
 import com.sirius.library.utils.JSONObject
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * CoProtocol based on ~thread decorator
@@ -23,8 +24,10 @@ class ThreadBasedCoProtocolTransport(var thid: String, pairwise: Pairwise?, rpc:
     var senderOrder = 0
     var their: Pairwise.Their? = null
 
-    @Throws(SiriusPendingOperation::class, SiriusInvalidPayloadStructure::class, SiriusInvalidMessage::class)
-    override fun sendAndWait(message: Message): Pair<Boolean, Message?> {
+    @Throws(SiriusPendingOperation::class, SiriusInvalidPayloadStructure::class, SiriusInvalidMessage::class,
+        CancellationException::class
+    )
+    override suspend fun sendAndWait(message: Message): Pair<Boolean, Message?> {
         prepareMessage(message)
         val res: Pair<Boolean, Message?> = super.sendAndWait(message)
         val response: Message? = res.second
@@ -48,10 +51,10 @@ class ThreadBasedCoProtocolTransport(var thid: String, pairwise: Pairwise?, rpc:
         return res
     }
 
-    @Throws(SiriusPendingOperation::class)
-    override fun send(message: Message) {
+    @Throws(SiriusPendingOperation::class,CancellationException::class)
+    override suspend fun send(message: Message): Boolean {
         prepareMessage(message)
-        super.send(message)
+        return super.send(message)
     }
 
 

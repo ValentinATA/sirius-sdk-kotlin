@@ -147,16 +147,18 @@ class CloudAgent : AbstractAgent {
      * @param routing_keys Routing key of recipient
      * @return
      */
-    override fun sendMessage(
+    override suspend fun sendMessage(
         message: Message?, their_vk: List<String?>?,
         endpoint: String, my_vk: String?, routing_keys: List<String?>?
-    ) {
+    ): Boolean {
         checkIsOpen()
         try {
-            rpc?.sendMessage(message, their_vk, endpoint, my_vk, routing_keys, false)
+           val message =  rpc?.sendMessage(message, their_vk, endpoint, my_vk, routing_keys, false)
+            return message != null
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        return false
     }
 
     override fun close() {

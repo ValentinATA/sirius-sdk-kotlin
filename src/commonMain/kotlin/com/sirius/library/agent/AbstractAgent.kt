@@ -40,13 +40,13 @@ abstract class AbstractAgent : TransportLayer() {
      * @param routing_keys Routing key of recipient
      * @return
      */
-    abstract fun sendMessage(
+    abstract suspend fun sendMessage(
         message: Message?, their_vk: List<String?>?,
         endpoint: String, my_vk: String?, routing_keys: List<String?>?
-    )
+    ) : Boolean
 
-    fun sendTo(message: Message?, to: Pairwise) {
-        sendMessage(
+    suspend fun sendTo(message: Message?, to: Pairwise) : Boolean {
+        return sendMessage(
             message,
             listOf(to.their.verkey),
             to.their.endpointAddress ?:"",

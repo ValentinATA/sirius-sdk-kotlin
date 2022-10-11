@@ -30,7 +30,7 @@ class Holder(context: Context<*>, issuer: Pairwise, masterSecretId: String?, loc
     ) {
     }
 
-    fun accept(offer: OfferCredentialMessage, comment: String?): Pair<Boolean, String> {
+    suspend fun accept(offer: OfferCredentialMessage, comment: String?): Pair<Boolean, String> {
         try {
             CoProtocolP2P(context, issuer, protocols(), timeToLiveSec).also { coprotocol ->
                 val docUri: String = Type.fromStr(offer.getType()?:"").docUri
@@ -91,7 +91,7 @@ class Holder(context: Context<*>, issuer: Pairwise, masterSecretId: String?, loc
         return Pair(false, "")
     }
 
-    fun accept(offer: OfferCredentialMessage): Pair<Boolean, String> {
+    suspend fun accept(offer: OfferCredentialMessage): Pair<Boolean, String> {
         return accept(offer, null)
     }
 

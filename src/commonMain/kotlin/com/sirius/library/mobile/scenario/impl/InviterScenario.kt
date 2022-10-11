@@ -36,7 +36,7 @@ abstract class InviterScenario(val eventStorage: EventStorageAbstract) : BaseSce
 
 
 
-    override fun start(event: Event) : Pair<Boolean,String?> {
+    override suspend fun start(event: Event) : Pair<Boolean,String?> {
         val request = event.message() as ConnRequest
         val didVerkey = SiriusSDK.context?.did?.createAndStoreMyDid()
         var did = didVerkey?.first

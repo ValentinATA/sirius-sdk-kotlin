@@ -9,6 +9,7 @@ import com.sirius.library.messaging.MessageUtil
 import com.sirius.library.messaging.Type
 import com.sirius.library.utils.Date
 import com.sirius.library.utils.JSONObject
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Abstraction application-level protocols in the context of interactions among agent-like things.
@@ -121,8 +122,10 @@ abstract class AbstractCloudCoProtocolTransport(rpc: AgentRPC) : AbstractCoProto
         }
     }
 
-    @Throws(SiriusPendingOperation::class, SiriusInvalidPayloadStructure::class, SiriusInvalidMessage::class)
-    override fun sendAndWait(message: Message): Pair<Boolean, Message?> {
+    @Throws(SiriusPendingOperation::class, SiriusInvalidPayloadStructure::class, SiriusInvalidMessage::class,
+        CancellationException::class
+    )
+    override suspend fun sendAndWait(message: Message): Pair<Boolean, Message?> {
         if (!isSetup) {
             throw SiriusPendingOperation("You must Setup protocol instance at first")
         }
@@ -201,20 +204,22 @@ abstract class AbstractCloudCoProtocolTransport(rpc: AgentRPC) : AbstractCoProto
             return GetOneResult(message!!, senderVerkey!!, recipientVerkey!!)
         }
 
-    @Throws(SiriusPendingOperation::class)
-    override fun send(message: Message) {
+    @Throws(SiriusPendingOperation::class,CancellationException::class)
+    override suspend fun send(message: Message): Boolean {
         if (!isSetup) {
             throw SiriusPendingOperation("You must Setup protocol instance at first")
         }
         rpc.setTimeouti(timeToLiveSec)
         setupContext(message)
+        var messageLast : Message? = null
         try {
-            rpc.sendMessage(message, listOf(theirVK), endpoint!!, myVerkey, routingKeys, false)
+            messageLast = rpc.sendMessage(message, listOf(theirVK), endpoint!!, myVerkey, routingKeys, false)
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
             cleanupContext(message)
         }
+        return messageLast != null
     }
 
 

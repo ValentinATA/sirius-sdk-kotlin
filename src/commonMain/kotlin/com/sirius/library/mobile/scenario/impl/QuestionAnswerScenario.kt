@@ -18,7 +18,7 @@ abstract class QuestionAnswerScenario(val eventStorage : EventStorageAbstract) :
     }
 
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         val id = event.message()?.getId()
         if (event.message() is QuestionMessage) {
             val eventPair = EventTransform.eventToPair(event)

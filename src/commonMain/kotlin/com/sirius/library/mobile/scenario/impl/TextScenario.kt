@@ -24,7 +24,7 @@ abstract class TextScenario(val eventStorage: EventStorageAbstract) : BaseScenar
 
     }
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         val eventPair = EventTransform.eventToPair(event)
         eventStorage.eventStore(eventPair.second?.getId()?:"", eventPair, false)
         return Pair(true, null)

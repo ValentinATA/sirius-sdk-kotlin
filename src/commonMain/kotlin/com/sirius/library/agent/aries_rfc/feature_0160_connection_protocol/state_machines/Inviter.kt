@@ -21,7 +21,7 @@ class Inviter(context: Context<*>, me: Pairwise.Me, connectionKey: String, myEnd
     BaseConnectionStateMachine(context,me, myEndpoint) {
     var log: Logger = Logger.getLogger(Inviter::class.simpleName)
     var connectionKey: String
-    fun createConnection(request: ConnRequest, didDoc: JSONObject?): Pairwise? {
+    suspend fun createConnection(request: ConnRequest, didDoc: JSONObject?): Pairwise? {
         // Validate request
         log.info("0% - Validate request")
         try {
@@ -126,7 +126,7 @@ class Inviter(context: Context<*>, me: Pairwise.Me, connectionKey: String, myEnd
         return null
     }
 
-    fun createConnection(request: ConnRequest): Pairwise? {
+    suspend fun createConnection(request: ConnRequest): Pairwise? {
         return createConnection(request, null)
     }
 

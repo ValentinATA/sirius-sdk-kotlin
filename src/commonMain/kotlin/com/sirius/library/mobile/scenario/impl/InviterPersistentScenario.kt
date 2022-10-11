@@ -21,7 +21,7 @@ abstract class InviterPersistentScenario(eventStorage: EventStorageAbstract) :
     InviterScenario(eventStorage) {
 
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         val connRequest = event.message() as ConnRequest
         val connectionKey = event.recipientVerkey ?: ""
         val endpoint = SiriusSDK.context?.endpointWithEmptyRoutingKeys

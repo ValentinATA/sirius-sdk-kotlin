@@ -64,7 +64,7 @@ class MobileContext(config: MobileHub.Config) : Context<MobileHub>(MobileHub(con
     }
 
     @JvmOverloads
-    fun connectToMediator(label: String?, connections: List<MobileContextConnection>? = null) {
+    suspend fun connectToMediator(label: String?, connections: List<MobileContextConnection>? = null) {
         val invitation: Invitation? = (currentHub.config as MobileHub.Config).mediatorInvitation
         val mediatorDid = getMediatorDid(invitation?.recipientKeys()?.firstOrNull() ?: "")
         if (mediatorDid == null) {
@@ -156,7 +156,7 @@ class MobileContext(config: MobileHub.Config) : Context<MobileHub>(MobileHub(con
         )
     }
 
-    fun askForMediation(): Boolean {
+    suspend fun askForMediation(): Boolean {
         println("askForMediation START")
         try {
             val cp = CoProtocolP2PAnon(
@@ -185,7 +185,7 @@ class MobileContext(config: MobileHub.Config) : Context<MobileHub>(MobileHub(con
         return false
     }
 
-    fun addMediatorKeys(keys: List<String>): Boolean {
+    suspend fun addMediatorKeys(keys: List<String>): Boolean {
         try {
             val cp = CoProtocolP2PAnon(
                 this,
@@ -209,7 +209,7 @@ class MobileContext(config: MobileHub.Config) : Context<MobileHub>(MobileHub(con
         return false
     }
 
-    fun addMediatorKey(key: String?): Boolean {
+    suspend fun addMediatorKey(key: String?): Boolean {
         return addMediatorKeys(listOfNotNull(key))
     }
 

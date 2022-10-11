@@ -42,7 +42,7 @@ class TestCopropocols {
         future.get(60)
     }
 
-    fun routine1(protocol: AbstractCloudCoProtocolTransport) {
+    suspend fun routine1(protocol: AbstractCloudCoProtocolTransport) {
         try {
             val firstReq = Message(JSONObject().put("@type", TEST_MSG_TYPES[0]).put("content", "Request1"))
             msgLog!!.add(firstReq)
@@ -61,7 +61,7 @@ class TestCopropocols {
         }
     }
 
-    fun routine1OnHub(protocol: AbstractP2PCoProtocol) {
+    suspend fun routine1OnHub(protocol: AbstractP2PCoProtocol) {
         try {
             val firstReq = Message(JSONObject().put("@type", TEST_MSG_TYPES[0]).put("content", "Request1"))
             msgLog!!.add(firstReq)

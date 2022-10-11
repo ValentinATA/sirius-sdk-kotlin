@@ -19,7 +19,7 @@ public abstract class BaseScenario() : ScenarioListener {
     abstract fun initMessages() : List<KClass<out Message>>
 
     var id : String = UUID.randomUUID.toString()
-    public fun startScenario(event: Event) {
+    public suspend fun startScenario(event: Event) {
         val ist = initMessages()
         val classOfMessage = event.message()!!::class
         val list =  ist.filter { message->
@@ -33,5 +33,5 @@ public abstract class BaseScenario() : ScenarioListener {
         }
     }
 
-    abstract fun start(event: Event) : Pair<Boolean,String?>
+    abstract suspend fun start(event: Event) : Pair<Boolean,String?>
 }

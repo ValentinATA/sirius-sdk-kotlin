@@ -5,6 +5,7 @@ import com.sirius.library.agent.pairwise.Pairwise
 import com.sirius.library.errors.sirius_exceptions.SiriusPendingOperation
 import com.sirius.library.hub.Context
 import com.sirius.library.messaging.Message
+import kotlin.coroutines.cancellation.CancellationException
 
 class CoProtocolThreadedP2P : AbstractP2PCoProtocol {
     var thid: String
@@ -29,13 +30,13 @@ class CoProtocolThreadedP2P : AbstractP2PCoProtocol {
         this.timeToLiveSec = timeToLiveSec
     }
 
-    @Throws(SiriusPendingOperation::class)
-    override fun send(message: Message) {
-        transportLazy?.send(message)
+    @Throws(SiriusPendingOperation::class, CancellationException::class)
+    override suspend fun send(message: Message): Boolean {
+        return transportLazy?.send(message) ?: false
     }
 
 
-    override fun sendAndWait(message: Message): Pair<Boolean, Message?> {
+    override suspend fun sendAndWait(message: Message): Pair<Boolean, Message?> {
         return transportLazy?.sendAndWait(message) ?: Pair<Boolean, Message?>(false, null)
     }
 

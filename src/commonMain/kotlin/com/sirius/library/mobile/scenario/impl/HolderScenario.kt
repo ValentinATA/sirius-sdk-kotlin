@@ -38,7 +38,7 @@ abstract class HolderScenario(val eventStorage: EventStorageAbstract) : BaseScen
          onScenarioEnd(id,false, cause)
      }*/
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         try {
             //FixMe label not good idea here
             val masterSecretId: String =
@@ -65,7 +65,7 @@ abstract class HolderScenario(val eventStorage: EventStorageAbstract) : BaseScen
         }
     }
 
-    fun accept(id: String, comment: String?, eventActionListener: EventActionListener?) {
+    suspend fun accept(id: String, comment: String?, eventActionListener: EventActionListener?) {
         eventActionListener?.onActionStart(EventAction.accept, id, comment)
 
         val locale: String = "en"

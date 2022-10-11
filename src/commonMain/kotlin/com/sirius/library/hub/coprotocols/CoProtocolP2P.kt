@@ -10,31 +10,43 @@ import com.sirius.library.errors.sirius_exceptions.SiriusPendingOperation
 import com.sirius.library.hub.Context
 import com.sirius.library.messaging.Message
 import com.sirius.library.utils.JSONObject
+import kotlin.coroutines.cancellation.CancellationException
 
 
-class CoProtocolP2P(context: Context<*>, pairwise: Pairwise, propocols: List<String>, timeToLiveSec: Int) :
+class CoProtocolP2P(
+    context: Context<*>,
+    pairwise: Pairwise,
+    propocols: List<String>,
+    timeToLiveSec: Int
+) :
     AbstractP2PCoProtocol(context) {
     var pairwise: Pairwise
     var protocols: List<String>
     var threadId = ""
 
 
-
-    @Throws(SiriusPendingOperation::class)
-    override fun send(message: Message) {
+    @Throws(SiriusPendingOperation::class, CancellationException::class)
+    override suspend fun send(message: Message): Boolean {
         setup(message, false)
-        transportLazy?.send(message)
+        return transportLazy?.send(message) ?: false
     }
 
-    @Throws(SiriusInvalidPayloadStructure::class, SiriusInvalidMessage::class, SiriusPendingOperation::class)
-    override fun sendAndWait(message: Message): Pair<Boolean, Message?> {
+    @Throws(
+        SiriusInvalidPayloadStructure::class,
+        SiriusInvalidMessage::class,
+        SiriusPendingOperation::class,
+        CancellationException::class
+    )
+    override suspend fun sendAndWait(message: Message): Pair<Boolean, Message?> {
         setup(message)
-        val res: Pair<Boolean, Message?> = transportLazy?.sendAndWait(message) ?: Pair<Boolean, Message?>(false,null)
+        val res: Pair<Boolean, Message?> =
+            transportLazy?.sendAndWait(message) ?: Pair<Boolean, Message?>(false, null)
         val response: Message? = res.second
         if (res.first) {
-            if (response?.messageObjectHasKey(PLEASE_ACK_DECORATOR)==true) {
-                threadId = response?.getMessageObjec()?.getJSONObject(PLEASE_ACK_DECORATOR)?.optString("message_id") ?: ""
-                if (threadId.isEmpty()) threadId = message?.getId() ?:""
+            if (response?.messageObjectHasKey(PLEASE_ACK_DECORATOR) == true) {
+                threadId = response?.getMessageObjec()?.getJSONObject(PLEASE_ACK_DECORATOR)
+                    ?.optString("message_id") ?: ""
+                if (threadId.isEmpty()) threadId = message?.getId() ?: ""
             } else {
                 threadId = ""
             }
@@ -57,7 +69,8 @@ class CoProtocolP2P(context: Context<*>, pairwise: Pairwise, propocols: List<Str
     private fun setup(message: Message, pleaseAck: Boolean) {
         if (pleaseAck) {
             if (!message.messageObjectHasKey(PLEASE_ACK_DECORATOR)) {
-                message.getMessageObjec()?.put(PLEASE_ACK_DECORATOR, JSONObject().put("message_id", message.getId()))
+                message.getMessageObjec()
+                    ?.put(PLEASE_ACK_DECORATOR, JSONObject().put("message_id", message.getId()))
             }
         }
         if (!threadId.isEmpty()) {

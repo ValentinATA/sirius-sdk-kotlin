@@ -17,6 +17,7 @@ import com.sirius.library.hub.coprotocols.CoProtocolThreadedTheirs
 import com.sirius.library.utils.JSONArray
 import com.sirius.library.utils.JSONObject
 import com.sirius.library.utils.Logger
+import kotlin.coroutines.cancellation.CancellationException
 
 class MicroLedgerSimpleConsensus : AbstractStateMachine {
     var log: Logger = Logger.getLogger(Inviter::class.simpleName)
@@ -378,8 +379,10 @@ class MicroLedgerSimpleConsensus : AbstractStateMachine {
         return context.getMicrolegdersi().getLedger(propose.state!!.name)!!
     }
 
-    @Throws(StateMachineTerminatedWithError::class, SiriusInvalidMessage::class, SiriusInvalidPayloadStructure::class)
-    private fun acceptCommitInternal(
+    @Throws(StateMachineTerminatedWithError::class, SiriusInvalidMessage::class, SiriusInvalidPayloadStructure::class,
+        CancellationException::class
+    )
+    private suspend fun acceptCommitInternal(
         co: CoProtocolThreadedP2P,
         ledger: AbstractMicroledger?,
         leader: Pairwise,
@@ -587,8 +590,8 @@ class MicroLedgerSimpleConsensus : AbstractStateMachine {
         }
     }
 
-    @Throws(StateMachineTerminatedWithError::class)
-    private fun acceptMicroledgerInternal(
+    @Throws(StateMachineTerminatedWithError::class, CancellationException::class)
+    private suspend fun acceptMicroledgerInternal(
         co: CoProtocolThreadedP2P, leader: Pairwise, propose: InitRequestLedgerMessage,
         timeout: Int
     ): AbstractMicroledger? {

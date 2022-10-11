@@ -20,7 +20,7 @@ abstract class ProverScenario(val eventStorage : EventStorageAbstract) : BaseSce
 
 
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         val eventPair = EventTransform.eventToPair(event)
         val id = eventPair.second?.getId()
         eventStorage.eventStore(id!!, eventPair, false)
@@ -44,7 +44,7 @@ abstract class ProverScenario(val eventStorage : EventStorageAbstract) : BaseSce
         }
     }
 
-    fun accept(id: String, comment: String?,actionListener: EventActionListener?, poolName : String? =null) {
+    suspend fun accept(id: String, comment: String?, actionListener: EventActionListener?, poolName : String? =null) {
         actionListener?.onActionStart(EventAction.accept, id, comment)
         val event = eventStorage.getEvent(id)
         val requestPresentation = event?.second as? RequestPresentationMessage

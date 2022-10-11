@@ -143,7 +143,7 @@ actual class MobileAgent actual constructor(
         get() = "Mobile agent"
 
 
-    actual override fun sendMessage(
+    actual override suspend fun sendMessage(
         message: Message?,
         their_vk: List<String?>?,
         endpoint: String,
@@ -160,10 +160,10 @@ actual class MobileAgent actual constructor(
         }
     }
 
-    actual fun sendMessage(
+    actual suspend fun  sendMessage(
         message: Message?,
         endpoint: String?
-    ) {
+    ) : Boolean {
         if (sender != null && endpoint != null) {
             val isSend = sender!!.sendTo(
                 endpoint,
@@ -172,8 +172,9 @@ actual class MobileAgent actual constructor(
                     StringUtils.CODEC.UTF_8
                 )
             )
-            //return new Pair<>(isSend, null);
+            return isSend
         }
+        return false
     }
 
     /*  fun getWebSocket(endpoint: String?): WebSocketConnector? {

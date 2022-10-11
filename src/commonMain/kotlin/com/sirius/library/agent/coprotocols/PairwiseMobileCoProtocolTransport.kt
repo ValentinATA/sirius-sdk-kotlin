@@ -18,7 +18,7 @@ class PairwiseMobileCoProtocolTransport(agent: MobileAgent, pw: Pairwise) :
         listener.unsubscribe()
     }
 
-    override fun sendAndWait(message: Message): Pair<Boolean, Message?> {
+    override suspend fun sendAndWait(message: Message): Pair<Boolean, Message?> {
         println("sendAndWait PairwiseMobileCoProtocolTransport =")
         send(message)
         val r: GetOneResult? = one
@@ -50,8 +50,8 @@ class PairwiseMobileCoProtocolTransport(agent: MobileAgent, pw: Pairwise) :
             return null
         }
 
-    override fun send(message: Message) {
-        agent.sendTo(message, pw)
+    override suspend fun send(message: Message) : Boolean{
+        return agent.sendTo(message, pw)
     }
 
     override fun sendMany(message: Message, to: List<Pairwise>): List<Pair<Boolean, String?>> {

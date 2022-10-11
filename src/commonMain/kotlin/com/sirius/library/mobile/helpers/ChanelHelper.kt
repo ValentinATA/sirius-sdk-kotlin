@@ -55,7 +55,7 @@ object ChanelHelper {
 
     }
 
-    private fun parseMessageByScenario(event: Event?) {
+    private suspend fun parseMessageByScenario(event: Event?) {
         ScenarioHelper.scenarioMap.forEach { scenario->
             event?.let {
                 scenario.value.startScenario(event)

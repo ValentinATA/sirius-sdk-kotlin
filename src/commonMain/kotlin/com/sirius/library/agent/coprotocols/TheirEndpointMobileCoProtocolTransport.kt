@@ -18,7 +18,7 @@ class TheirEndpointMobileCoProtocolTransport(var agent: MobileAgent, var myVerke
         listener.unsubscribe()
     }
 
-    override fun sendAndWait(message: Message): Pair<Boolean, Message?> {
+    override suspend fun sendAndWait(message: Message): Pair<Boolean, Message?> {
         println("sendAndWait resTheirEndpointMobileCoProtocolTransport =")
         send(message)
         val r: GetOneResult? = one
@@ -51,11 +51,11 @@ class TheirEndpointMobileCoProtocolTransport(var agent: MobileAgent, var myVerke
             return null
         }
 
-    override fun send(message: Message) {
+    override suspend fun send(message: Message): Boolean {
         println("send endpoint.verkey="+endpoint.verkey)
         println("send endpoint.endpointAddress="+endpoint.endpointAddress)
         println("send myVerkey="+myVerkey)
-        agent.sendMessage(
+       return  agent.sendMessage(
             message,
             listOf(endpoint.verkey),
             endpoint.endpointAddress?:"",

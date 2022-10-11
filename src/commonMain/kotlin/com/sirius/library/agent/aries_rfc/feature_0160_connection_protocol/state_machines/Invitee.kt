@@ -18,7 +18,7 @@ import com.sirius.library.utils.System
 
 class Invitee(context: Context<*>, me: Pairwise.Me, myEndpoint: Endpoint) : BaseConnectionStateMachine(context, me, myEndpoint) {
     var log: Logger = Logger.getLogger(Invitee::class.simpleName)
-    fun createConnection(
+    suspend fun createConnection(
         invitation: Invitation,
         myLabel: String?,
         didDoc: DidDoc?,
@@ -161,11 +161,11 @@ class Invitee(context: Context<*>, me: Pairwise.Me, myEndpoint: Endpoint) : Base
         return null
     }
 
-    fun createConnection(invitation: Invitation, myLabel: String?, didDoc: DidDoc?): Pairwise? {
+    suspend fun createConnection(invitation: Invitation, myLabel: String?, didDoc: DidDoc?): Pairwise? {
         return createConnection(invitation, myLabel, didDoc, null)
     }
 
-    fun createConnection(invitation: Invitation, myLabel: String?): Pairwise? {
+    suspend fun createConnection(invitation: Invitation, myLabel: String?): Pairwise? {
         return createConnection(invitation, myLabel, null, null)
     }
 

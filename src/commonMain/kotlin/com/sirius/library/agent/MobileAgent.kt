@@ -46,18 +46,18 @@ expect class MobileAgent(walletConfig: JSONObject?, walletCredentials: JSONObjec
     override val name: String
 
 
-    override fun sendMessage(
+    override suspend fun sendMessage(
         message: Message?,
         their_vk: List<String?>?,
         endpoint: String,
         my_vk: String?,
         routing_keys: List<String?>?
-    )
+    ) : Boolean
 
-     fun sendMessage(
+    suspend fun sendMessage(
         message: Message?,
         endpoint: String?
-    )
+    ) : Boolean
 
     fun connect(endpoint: String?)
 

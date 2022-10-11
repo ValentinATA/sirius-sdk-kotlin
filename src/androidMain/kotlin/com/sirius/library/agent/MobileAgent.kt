@@ -138,32 +138,35 @@ actual  class MobileAgent actual constructor(walletConfig: JSONObject?, walletCr
         get() = "Mobile agent Android"
 
 
-    actual override fun sendMessage(
+    actual override suspend fun sendMessage(
         message: Message?,
         their_vk: List<String?>?,
         endpoint: String,
         my_vk: String?,
         routing_keys: List<String?>?
-    ) {
+    ) : Boolean {
         if (routing_keys?.isEmpty() == false) throw java.lang.RuntimeException("Not yet supported!")
         println("sendMessage their_vk=" + their_vk)
         println("sendMessage my_vk=" + my_vk)
         val cryptoMsg = packMessage(message ?: Message(), my_vk, their_vk.orEmpty())
         if (sender != null) {
             val isSend = sender!!.sendTo(endpoint, cryptoMsg)
+            return  isSend
             //return new Pair<>(isSend, null);
         }
+        return false
     }
 
-    actual fun sendMessage(
+    actual suspend fun sendMessage(
         message: Message?,
         endpoint: String?
-    ){
+    ) : Boolean{
        // val cryptoMsg = packMessage(message ?: Message(), my_vk, their_vk.orEmpty())
         if (sender != null && endpoint!=null) {
             val isSend = sender!!.sendTo(endpoint, StringUtils.stringToBytes(message?.getMessageObjec().toString(), StringUtils.CODEC.UTF_8))
-            //return new Pair<>(isSend, null);
+            return isSend
         }
+        return false
     }
     /*  fun getWebSocket(endpoint: String?): WebSocketConnector? {
           return if (webSockets.containsKey(endpoint)) {

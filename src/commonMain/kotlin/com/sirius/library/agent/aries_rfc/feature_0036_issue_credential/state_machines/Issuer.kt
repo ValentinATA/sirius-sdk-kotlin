@@ -72,7 +72,7 @@ class Issuer(context: Context<*>, holder: Pairwise, timeToLiveSec: Int) : BaseIs
         }
     }
 
-    fun issue(params: IssueParams): Boolean {
+    suspend fun issue(params: IssueParams): Boolean {
         if (params.values == null || params.schema == null || params.credDef == null || params.credId == null) throw RuntimeException(
             "Bad params"
         )

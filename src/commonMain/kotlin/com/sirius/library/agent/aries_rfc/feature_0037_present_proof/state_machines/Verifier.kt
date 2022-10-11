@@ -91,7 +91,7 @@ class Verifier : BaseVerifyStateMachine {
         }
     }
 
-    fun verify(params: VerifyParams): Boolean {
+    suspend fun verify(params: VerifyParams): Boolean {
         try {
             CoProtocolP2P(context, prover, protocols(), timeToLiveSec).also { coprotocol ->
                 try {

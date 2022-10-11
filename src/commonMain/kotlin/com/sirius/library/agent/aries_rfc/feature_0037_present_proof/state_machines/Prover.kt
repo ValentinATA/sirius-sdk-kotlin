@@ -29,7 +29,7 @@ class Prover(context: Context<*>, var verifier: Pairwise, var masterSecretId: St
     ) {
     }
 
-    fun prove(request: RequestPresentationMessage,  selfAttestedAttributes :JSONObject = JSONObject()): Boolean {
+    suspend fun prove(request: RequestPresentationMessage, selfAttestedAttributes :JSONObject = JSONObject()): Boolean {
         try {
             CoProtocolP2P(context, verifier, protocols(), timeToLiveSec).also { coprotocol ->
                 try {

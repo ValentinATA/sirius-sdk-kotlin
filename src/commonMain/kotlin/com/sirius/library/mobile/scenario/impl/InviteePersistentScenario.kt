@@ -19,7 +19,7 @@ abstract class InviteePersistentScenario(eventStorage: EventStorageAbstract) :
     InviteeScenario(eventStorage) {
 
 
-    override fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
+    override suspend fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
         actionListener?.onActionStart(EventAction.accept, id, comment)
         val event = eventStorage.getEvent(id)
         val invitation = event?.second as? Invitation
@@ -33,7 +33,7 @@ abstract class InviteePersistentScenario(eventStorage: EventStorageAbstract) :
     }
 
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         val eventPair = EventTransform.eventToPair(event)
         val id = eventPair.second?.getId()
         eventStorage.eventStore(id?:"", eventPair, false)

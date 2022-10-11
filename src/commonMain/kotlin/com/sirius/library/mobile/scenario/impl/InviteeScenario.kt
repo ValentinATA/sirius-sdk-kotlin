@@ -40,7 +40,7 @@ abstract class InviteeScenario(val eventStorage: EventStorageAbstract) : BaseSce
         actionListener?.onActionEnd(EventAction.cancel, id, null, false, cause)
     }
 
-    open fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
+    open suspend fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
         actionListener?.onActionStart(EventAction.accept, id, comment)
         val event = eventStorage.getEvent(id)
         val invitation = event?.second as? Invitation
@@ -85,7 +85,7 @@ abstract class InviteeScenario(val eventStorage: EventStorageAbstract) : BaseSce
     }
 
 
-    override fun start(event: Event): Pair<Boolean, String?> {
+    override suspend fun start(event: Event): Pair<Boolean, String?> {
         val eventPair = EventTransform.eventToPair(event)
         val id = eventPair.second?.getId()
         eventStorage.eventStore(id?:"", eventPair, false)

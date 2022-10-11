@@ -123,7 +123,7 @@ actual class MobileAgent actual constructor(
     actual override val name: String
         get() = "MobileAgent IOS"
 
-    actual override fun sendMessage(
+    actual override suspend fun sendMessage(
         message: Message?,
         their_vk: List<String?>?,
         endpoint: String,
@@ -140,15 +140,16 @@ actual class MobileAgent actual constructor(
         }
     }
 
-    actual fun sendMessage(
+    actual suspend fun sendMessage(
         message: Message?,
         endpoint: String?
-    ) {
+    ) : Boolean{
 
         if (sender != null) {
             val isSend = sender!!.sendTo(endpoint,  StringUtils.stringToBytes(message?.getMessageObjec().toString(), StringUtils.CODEC.UTF_8))
-            //return new Pair<>(isSend, null);
+            return isSend
         }
+        return false
     }
 
     actual fun connect(endpoint: String?) {
