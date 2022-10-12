@@ -23,7 +23,7 @@ abstract class Persistent0160Scenario(val eventStorage: EventStorageAbstract) : 
     }
 
 
-    fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
+    suspend fun accept(id: String, comment: String?, actionListener: EventActionListener?) {
         actionListener?.onActionStart(EventAction.accept, id, comment)
         val event = eventStorage.getEvent(id)
         var error: String? = null

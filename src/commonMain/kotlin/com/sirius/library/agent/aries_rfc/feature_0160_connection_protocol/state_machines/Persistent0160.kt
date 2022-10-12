@@ -20,7 +20,7 @@ import com.sirius.library.utils.JSONObject
 
 
 object Persistent0160 {
-    fun receive(context: Context<*>, event: Event): Pairwise? {
+    suspend fun receive(context: Context<*>, event: Event): Pairwise? {
         if (event.message() is ConnRequest) {
             receiveRequest(
                 context,
@@ -36,7 +36,7 @@ object Persistent0160 {
         return null
     }
 
-    fun acceptInvitation(context: Context<*>, invitation: Invitation, myLabel: String?) {
+    suspend fun acceptInvitation(context: Context<*>, invitation: Invitation, myLabel: String?) {
         val (first, second) = context.did.createAndStoreMyDid()
         val request = ConnRequest.builder().setLabel(myLabel).setDid(first).setVerkey(second)
             .setEndpoint(context.endpointAddressWithEmptyRoutingKeys).setDocUri(
@@ -61,7 +61,7 @@ object Persistent0160 {
         )
     }
 
-    fun receiveRequest(
+    suspend fun receiveRequest(
         context: Context<*>,
         request: ConnRequest,
         connectionKeyBase58: String,
@@ -111,7 +111,7 @@ object Persistent0160 {
         return response
     }
 
-    fun receiveResponse(context: Context<*>, response: ConnResponse): Pairwise? {
+    suspend fun receiveResponse(context: Context<*>, response: ConnResponse): Pairwise? {
         if (!response.verifyConnection(context.crypto)) return null
         val connectionKey =
             response.messageObj.getJSONObject("connection~sig")!!.optString("signer")
