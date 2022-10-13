@@ -149,15 +149,17 @@ actual class MobileAgent actual constructor(
         endpoint: String,
         my_vk: String?,
         routing_keys: List<String?>?
-    ) {
+    ): Boolean {
         if (routing_keys?.isEmpty() == false) throw java.lang.RuntimeException("Not yet supported!")
         println("sendMessage their_vk=" + their_vk)
         println("sendMessage my_vk=" + my_vk)
         val cryptoMsg = packMessage(message ?: Message(), my_vk, their_vk.orEmpty())
         if (sender != null) {
             val isSend = sender!!.sendTo(endpoint, cryptoMsg)
+            return isSend
             //return new Pair<>(isSend, null);
         }
+        return  false
     }
 
     actual suspend fun  sendMessage(
