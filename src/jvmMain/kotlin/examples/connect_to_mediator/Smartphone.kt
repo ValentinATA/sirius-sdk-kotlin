@@ -36,7 +36,7 @@ class Smartphone {
         this.config = config
     }
 
-    fun start() {
+    suspend fun start() {
         if (context == null) {
             context = MobileContext(config)
             context!!.connectToMediator("Edge Test agent")
@@ -44,7 +44,7 @@ class Smartphone {
             me = Pairwise.Me(first, second)
             //context.addMediatorKey(me.getVerkey());
             loop = true
-            java.lang.Thread(java.lang.Runnable { routine() }).start()
+            routine()
         }
     }
 
@@ -54,7 +54,7 @@ class Smartphone {
         }
     }
 
-    fun acceptInvitation(invitation: Invitation?) {
+    suspend fun acceptInvitation(invitation: Invitation?) {
         val invitee = Invitee(context!!, me!!, context!!.endpointWithEmptyRoutingKeys?: Endpoint(""))
         val pw: Pairwise? = invitee.createConnection(invitation!!, "Edge agent")
         if (pw != null) {
@@ -62,7 +62,7 @@ class Smartphone {
         }
     }
 
-    protected fun routine() {
+    protected suspend fun routine() {
         try {
             context?.anonCreds?.proverCreateMasterSecret(masterSecret)
         } catch (e: DuplicateMasterSecretNameException) {

@@ -19,6 +19,8 @@ import com.sirius.library.messaging.MessageFabric
 import com.sirius.library.utils.Date
 import com.sirius.library.utils.JSONArray
 import com.sirius.library.utils.JSONObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.jvm.JvmStatic
 
 object Main {
@@ -57,7 +59,8 @@ object Main {
             if (myEndpoint == null) return Pair("", "")
             // шаг 2 - создаем приглашение
             val invitation: Invitation =
-                Invitation.builder().setLabel("0160 Sample J").setRecipientKeys(listOfNotNull(connectionKey))
+                Invitation.builder().setLabel("0160 Sample J")
+                    .setRecipientKeys(listOfNotNull(connectionKey))
                     .setEndpoint(myEndpoint.address).build()
 
             // шаг 3 - согласно Aries-0160 генерируем URL
@@ -95,7 +98,10 @@ object Main {
             val qrUrl = qrCodeRes.second
             println("Открой QR код и просканируй в Sirius App: $qrUrl")
             // Формируем DID - свой идентификатор в контексте relationship и VERKEY - открытый ключ
-            val (myDid, myVerkey) = context.did.createAndStoreMyDid(null, "000000000000000000000000000MISHA")
+            val (myDid, myVerkey) = context.did.createAndStoreMyDid(
+                null,
+                "000000000000000000000000000MISHA"
+            )
             println("DID: $myDid")
             println("Verkey: $myVerkey")
             // определимся какой endpoint мы возьмем, для простоты возьмем endpoint без доп шифрования
@@ -110,27 +116,38 @@ object Main {
             if (myEndpoint != null) {
 
 
-                // Слушаем запросы
-                println("Слушаем запросы")
-                val listener: Listener? = context.subscribe()
-                val event: Event? = listener?.one?.get(60)
-                println("Получено событие")
-                // В рамках Samples интересны только запросы 0160 на установку соединения для connection_key нашего QR
-                if (event?.recipientVerkey.equals(connectionKey) && event?.message() is ConnRequest) {
-                    val request: ConnRequest = event!!.message() as ConnRequest
-                    // Establish connection with Sirius Communicator via standard Aries protocol
-                    // https://github.com/hyperledger/aries-rfcs/blob/master/features/0160-connection-protocol/README.md#states
-                    val sm = Inviter(context, Pairwise.Me(myDid, myVerkey), connectionKey, myEndpoint)
-                    val p2p: Pairwise? = sm.createConnection(request)
-                    if (p2p != null) {
-                        // Ensure pairwise is stored
-                        context.pairwiseList.ensureExists(p2p)
-                        val hello: Message =
-                            Message.builder().setContent("Привет в новый МИР!!!" + Date().toString()).setLocale("ru")
-                                .build()
-                        println("Sending hello")
-                        context.sendTo(hello, p2p)
-                        println("sended")
+                GlobalScope.launch {
+
+
+                    // Слушаем запросы
+                    println("Слушаем запросы")
+                    val listener: Listener? = context.subscribe()
+                    val event: Event? = listener?.one?.get(60)
+                    println("Получено событие")
+                    // В рамках Samples интересны только запросы 0160 на установку соединения для connection_key нашего QR
+                    if (event?.recipientVerkey.equals(connectionKey) && event?.message() is ConnRequest) {
+                        val request: ConnRequest = event!!.message() as ConnRequest
+                        // Establish connection with Sirius Communicator via standard Aries protocol
+                        // https://github.com/hyperledger/aries-rfcs/blob/master/features/0160-connection-protocol/README.md#states
+                        val sm = Inviter(
+                            context,
+                            Pairwise.Me(myDid, myVerkey),
+                            connectionKey,
+                            myEndpoint
+                        )
+                        val p2p: Pairwise? = sm.createConnection(request)
+                        if (p2p != null) {
+                            // Ensure pairwise is stored
+                            context.pairwiseList.ensureExists(p2p)
+                            val hello: Message =
+                                Message.builder()
+                                    .setContent("Привет в новый МИР!!!" + Date().toString())
+                                    .setLocale("ru")
+                                    .build()
+                            println("Sending hello")
+                            context.sendTo(hello, p2p)
+                            println("sended")
+                        }
                     }
                 }
             }
