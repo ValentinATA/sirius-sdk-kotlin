@@ -23,7 +23,7 @@ class ConfTest {
     fun configureTestEnv() {
         test_suite_baseurl = System.getenv("TEST_SUITE_BASE_URL")
         if (test_suite_baseurl == null || test_suite_baseurl!!.isEmpty()) {
-            test_suite_baseurl = "http://demo.socialsirius.com:8081"
+            test_suite_baseurl = "http://localhost"
         }
         test_suite_overlay_address = "http://10.0.0.90"
         old_agent_address = System.getenv("INDY_AGENT_BASE_URL")

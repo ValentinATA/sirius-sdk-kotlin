@@ -18,7 +18,7 @@ plugins {
 
 
 group = 'com.sirius.library'
-version = '0.9.1'
+version = '0.9.9'
 //cocoapodVersion = '1.0'
 
 
@@ -31,7 +31,7 @@ publishing {
         release(MavenPublication) {
             groupId = 'com.sirius'
             artifactId = 'library'
-            version = '0.9.1'
+            version = '0.9.9'
 
             afterEvaluate {
                 from components.release
