@@ -5,13 +5,13 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-   /* resolutionStrategy {
+    resolutionStrategy {
         eachPlugin {
             if (requested.id.namespace == 'com.android' || requested.id.name == 'kotlin-android-extensions') {
-                useModule('com.android.tools.build:gradle:4.0.2')
+                useModule('com.android.tools.build:gradle:7.2.2')
             }
         }
-    }*/
+    }
 }
 rootProject.name = 'sdkkotlin'
-include ('sirius-sdk-kotlin::multiplatform-crypto-libsodium-bindings')
+include (':multiplatform-crypto-libsodium-bindings')
