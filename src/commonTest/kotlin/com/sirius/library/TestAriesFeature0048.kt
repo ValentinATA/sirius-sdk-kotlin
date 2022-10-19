@@ -9,8 +9,11 @@ import com.sirius.library.agent.pairwise.Pairwise
 import com.sirius.library.helpers.ConfTest
 import com.sirius.library.helpers.ServerTestSuite
 import com.sirius.library.messaging.Message
+import com.sirius.library.messaging.MessageUtil
 import com.sirius.library.utils.CompletableFutureKotlin
 import com.sirius.library.utils.JSONObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -51,12 +54,15 @@ class TestAriesFeature0048 {
         val listener2: Listener = agent2.subscribe()
         val ping: Ping = Ping.builder().setComment("testMsg").setResponseRequested(false).build()
         val feature2= listener2.one
-        agent1.sendTo(ping, to)
+        GlobalScope.async {
+            agent1.sendTo(ping, to)
+        }
+
 
         // Check OK
         val event: Event? = feature2?.get(10)
         val recv: JSONObject? = event?.getJSONOBJECTFromJSON("message")
-        val (first2, second2) = Message.restoreMessageInstance(recv.toString())
+        val (first2, second2) = MessageUtil.restoreMessageInstance(recv.toString())
         assertTrue(first2)
         assertTrue(second2 is Ping)
         assertEquals((second2 as Ping).comment, ping.comment)
@@ -67,6 +73,8 @@ class TestAriesFeature0048 {
             Pairwise.Me(first, second),
             Pairwise.Their(first1, "Agent3", endpointAddress3, second1)
         )
-        agent1.sendTo(ping, to)
+        GlobalScope.async {
+            agent1.sendTo(ping, to)
+        }
     }
 }

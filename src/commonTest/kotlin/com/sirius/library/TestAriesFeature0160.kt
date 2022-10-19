@@ -141,16 +141,18 @@ class TestAriesFeature0160 {
                 val myEndpoint: Endpoint? = context.endpointWithEmptyRoutingKeys
                 val listener: Listener? = context.subscribe()
                 val event: Event? = listener?.one?.get(30)
-                if (expectedConnectionKey == event?.recipientVerkey) {
-                    if (event?.message() is ConnRequest) {
-                        val request: ConnRequest = event?.message() as ConnRequest
-                        assertNotNull( myEndpoint)
-                        val machine = Inviter(context, me, expectedConnectionKey, myEndpoint)
-                        val pairwise: Pairwise? = machine.createConnection(request)
-                        assertNotNull( pairwise)
-                        context.getPairwiseListi().ensureExists(pairwise)
-                    } else {
-                        fail("Wrong request message type")
+                GlobalScope.launch {
+                    if (expectedConnectionKey == event?.recipientVerkey) {
+                        if (event?.message() is ConnRequest) {
+                            val request: ConnRequest = event?.message() as ConnRequest
+                            assertNotNull( myEndpoint)
+                            val machine = Inviter(context, me, expectedConnectionKey, myEndpoint)
+                            val pairwise: Pairwise? = machine.createConnection(request)
+                            assertNotNull( pairwise)
+                            context.getPairwiseListi().ensureExists(pairwise)
+                        } else {
+                            fail("Wrong request message type")
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -169,10 +171,12 @@ class TestAriesFeature0160 {
                 fail()
             }
             val machine = Invitee(context, me, myEndpoint)
-            val pairwise: Pairwise? = machine.createConnection(invitation, myLabel)
-            assertNotEquals(null, pairwise)
-            pairwise?.let {
-                context.getPairwiseListi().ensureExists(pairwise)
+            GlobalScope.launch {
+                val pairwise: Pairwise? = machine.createConnection(invitation, myLabel)
+                assertNotEquals(null, pairwise)
+                pairwise?.let {
+                    context.getPairwiseListi().ensureExists(pairwise)
+                }
             }
         }
     }

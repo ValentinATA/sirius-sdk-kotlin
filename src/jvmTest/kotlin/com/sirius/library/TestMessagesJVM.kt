@@ -5,6 +5,7 @@ import com.sirius.library.agent.aries_rfc.feature_0048_trust_ping.Ping
 import com.sirius.library.agent.aries_rfc.feature_0048_trust_ping.Pong
 import com.sirius.library.messaging.Message
 import com.sirius.library.messaging.MessageFabric
+import com.sirius.library.messaging.MessageUtil
 import com.sirius.library.models.TestMessage1
 import com.sirius.library.models.TestMessage2
 import com.sirius.library.utils.JSONObject
@@ -18,12 +19,12 @@ class TestMessagesJVM {
     @Test
     fun testRegisterProtocolMessageSuccess() {
         try {
-            Message.registerMessageClass(TestMessage1::class, "test-protocol"){
+            MessageUtil.registerMessageClass(TestMessage1::class, "test-protocol"){
                 TestMessage1(it)
             }
             val messObject: JSONObject = JSONObject()
             messObject.put("@type", "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/test-protocol/1.0/name")
-            val (first, second) = Message.restoreMessageInstance(messObject.toString())
+            val (first, second) = MessageUtil.restoreMessageInstance(messObject.toString())
             assertTrue(first)
             assertTrue(second is TestMessage1)
         } catch (e: Exception) {
@@ -35,14 +36,14 @@ class TestMessagesJVM {
 
     @Test
     fun testRegisterProtocolMessageFail() {
-        Message.registerMessageClass(TestMessage1::class, "test-protocol"){
+        MessageUtil.registerMessageClass(TestMessage1::class, "test-protocol"){
             TestMessage1(it)
         }
 
         val messObject: JSONObject = JSONObject()
         messObject.put("@type", "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/fake-protocol/1.0/name")
         try {
-            val (first, second) = Message.restoreMessageInstance(messObject.toString())
+            val (first, second) = MessageUtil.restoreMessageInstance(messObject.toString())
             assertFalse(first)
             assertNull(second)
         } catch (e: Exception) {
@@ -53,16 +54,16 @@ class TestMessagesJVM {
 
     @Test
     fun testRegisterProtocolMessageMultipleName() {
-        Message.registerMessageClass(TestMessage1::class, "test-protocol"){
+        MessageUtil.registerMessageClass(TestMessage1::class, "test-protocol"){
             TestMessage1(it)
         }
-        Message.registerMessageClass(TestMessage2::class, "test-protocol", "test-name"){
+        MessageUtil.registerMessageClass(TestMessage2::class, "test-protocol", "test-name"){
             TestMessage2(it)
         }
         try {
             val messObject: JSONObject = JSONObject()
             messObject.put("@type", "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/test-protocol/1.0/name")
-            val (first, second) = Message.restoreMessageInstance(messObject.toString())
+            val (first, second) = MessageUtil.restoreMessageInstance(messObject.toString())
             assertTrue(first)
             assertTrue(second is TestMessage1)
         } catch (e: Exception) {
@@ -72,7 +73,7 @@ class TestMessagesJVM {
         try {
             val messObject: JSONObject = JSONObject()
             messObject.put("@type", "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/test-protocol/1.0/test-name")
-            val (first, second) = Message.restoreMessageInstance(messObject.toString())
+            val (first, second) = MessageUtil.restoreMessageInstance(messObject.toString())
            assertTrue(first)
             assertTrue(second is TestMessage2)
         } catch (e: Exception) {
@@ -90,7 +91,7 @@ class TestMessagesJVM {
         pingObject.put("response_requested", true)
         val ping = Ping(pingObject.toString())
         try {
-            val (first, second) = Message.restoreMessageInstance(pingObject.toString())
+            val (first, second) = MessageUtil.restoreMessageInstance(pingObject.toString())
             assertTrue(first)
             assertTrue(second is Ping)
             assertEquals("Hi. Are you OK?", (second as Ping).comment)
@@ -108,7 +109,7 @@ class TestMessagesJVM {
         pongObject.put("~thread", threadObj)
         val pong = Pong(pongObject.toString())
         try {
-            val (first, second) = Message.restoreMessageInstance(pongObject.toString())
+            val (first, second) = MessageUtil.restoreMessageInstance(pongObject.toString())
             assertTrue(first)
             assertTrue(second is Pong)
             assertEquals("Hi. I am OK!", (second as Pong).comment)
